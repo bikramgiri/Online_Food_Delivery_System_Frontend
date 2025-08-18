@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+const API_URL = import.meta.env.API_URL || 'http://localhost:3000';
 
 const cartSlice = createSlice({
   name: "cart",
@@ -8,14 +9,16 @@ const cartSlice = createSlice({
       state.push(action.payload);
     },
     removeItem: (state, action) => {
-      const id = action.payload.id;
-      state = state.filter(item => item.id !== id);
+      return state.filter((item) => item._id !== action.payload);
     },
-    clearCart: (state) => {
-      state.initialState = [];
+    addToFavorites: (state, action) => {
+      const item = state.find((item) => item._id === action.payload);
+      if (item) {
+        item.isFavorite = true;
+      }
     },
   },
 });
 
-export const { addItem, removeItem, clearCart } = cartSlice.actions;
-export default cartSlice.reducer;
+export const { addItem, removeItem, addToFavorites } = cartSlice.actions
+export default cartSlice.reducer

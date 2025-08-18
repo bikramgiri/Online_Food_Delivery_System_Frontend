@@ -1,29 +1,45 @@
-import axios from 'axios';
+// import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../../store/cartSlice';
+import { fetchProducts } from '../../../store/productSlice';
 
 const API_URL = import.meta.env.API_URL || 'http://localhost:3000';
 
 const Product = () => {
-  const [products,setProducts] = useState([])
-  const [error, setError] = useState(null); // Added for error handling
+  // const [products,setProducts] = useState([])
+  const [error] = useState(null); // Added for error handling
   const dispatch = useDispatch()
+  
+  // *Fetch products methods 1:
+  const {data: products, status} = useSelector((state)=>state.product)
 
-  const fetchProducts = async()=>{
-    try {
-      const response = await axios.get(`${API_URL}/admin/products`)
-      if(response.status === 200){
-        setProducts(response.data.data)
-      }
-    } catch (error) {
-      setError(error.message || 'Failed to fetch products');
-    }
+    useEffect(() => {
+    dispatch(fetchProducts());
+  }, [])
+
+  if(status == "loading"){
+    return <h1>Loading...</h1>
+  }
+  if(status == "error"){
+    return <h1>Error fetching products</h1>;
   }
 
-  useEffect(() => {
-    fetchProducts();
-  }, [])
+  // *Fetch products methods 2:
+  // const fetchProducts = async()=>{
+  //   try {
+  //     const response = await axios.get(`${API_URL}/admin/products`)
+  //     if(response.status === 200){
+  //       setProducts(response.data.data)
+  //     }
+  //   } catch (error) {
+  //     setError(error.message || 'Failed to fetch products');
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, [])
 
   const addToCart = (product) => {
     dispatch(addItem(product))
@@ -36,7 +52,7 @@ const Product = () => {
           {/* Heading & Filters */}
           <div className="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
             <div>
-              <h1 className="font-bold text-4xl text-yellow-900 md:text-4xl">Our Popular Items</h1>
+              <h1 className="font-bold text-4xl text-yellow-900 md:text-4xl">Our Popular Foods</h1>
             </div>
             <div className="flex items-center space-x-4">
               <button data-modal-toggle="filterModal" data-modal-target="filterModal" type="button" className="flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium dark:text-white hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">

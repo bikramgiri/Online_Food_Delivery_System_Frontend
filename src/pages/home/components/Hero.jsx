@@ -31,7 +31,7 @@ const Hero = () => {
                     <p className="mt-8 text-gray-700 lg:w-10/12">Sit amet consectetur adipisicing elit. <a href="#" className="text-yellow-700">connection</a> tenetur nihil quaerat suscipit, sunt dignissimos.</p>
                 </div>
                 <div className="ml-auto -mb-24 lg:-mb-56 lg:w-6/12">
-                <img src="../../../../public/img/foods.png" className="relative mb-80 ml-20" alt="food illustration" loading="lazy" width="600" height="200"></img>
+                <img src="../../../../img/foods.png" className="relative mb-80 ml-20" alt="food illustration" loading="lazy" width="600" height="200"></img>
                 </div>
             </div>
         </div>
