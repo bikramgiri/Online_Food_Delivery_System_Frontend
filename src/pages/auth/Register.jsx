@@ -1,6 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { registerUser } from '../../store/authSlice';
+import { STATUSES } from '../../global/statuses';
 
 const Register = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const {status} = useSelector((state) => state.auth)
+  console.log(status)
+  const [userData, setUserData] = useState({
+    username: '',
+    email: '',
+    phoneNumber: '',
+    password: '', 
+  })
+
+  const [phoneError, setPhoneError] = useState(''); // For phone validation error
+  const [registerError, setRegisterError] = useState(''); // For general registration error
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData({
+      ...userData,
+      [name]: value,
+    })
+    if (name === 'phoneNumber') {
+      setPhoneError(''); // Clear error on change
+    }
+  }
+
+  const validatePhone = (phone) => {
+    return /^\d{10}$/.test(phone); // Exactly 10 digits
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setRegisterError(''); // Clear previous errors
+    if (!validatePhone(userData.phoneNumber)) {
+      setPhoneError('Invalid phone number format. It should be exactly 10 digits.');
+      return;
+    }
+    dispatch(registerUser(userData));
+    if (status === STATUSES.SUCCESS) {
+      return navigate('/login');
+    }
+    if (status === STATUSES.ERROR) {
+      setRegisterError('Registration failed. Please try again.');
+      return;
+    }
+  };
+
+  // useEffect(() => {
+  //   if (status === STATUSES.SUCCESS) {
+  //     navigate('/login');
+  //   } else if (status === STATUSES.ERROR) {
+  //     setRegisterError('Registration failed. Please try again.');
+  //   }
+  // }, [status, navigate]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
@@ -10,12 +68,15 @@ const Register = () => {
           </svg> */}
         </div>
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">Sign up your account</h2>
-        <form className="space-y-4">
+        {registerError && <p className="text-red-500 text-center mb-4">{registerError}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
             <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
             <input
               type="text"
               id="username"
+              name='username'
+              onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="John Doe"
             />
@@ -25,15 +86,31 @@ const Register = () => {
             <input
               type="email"
               id="email"
+              name='email'
+              onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="your@email.com"
             />
+          </div>
+          <div>
+            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone number</label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              name='phoneNumber'
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="9800000000"
+            />
+            {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
           </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
               id="password"
+              name='password'
+              onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="••••••••"
             />
@@ -50,11 +127,12 @@ const Register = () => {
           </div>
           <button
             type="submit"
+            disabled={status === STATUSES.LOADING} // Disable during loading
             className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Sign up
+            {status === STATUSES.LOADING ? 'Signing up...' : 'Sign up'}
           </button>
-         <p className="text-sm ml-25 text-gray-600">Already have an account?  <a href="/login" className="text-sm text-indigo-600 hover:underline">Login here</a></p>
+         <p className="text-sm ml-25 text-gray-600">Already have an account?  <Link to="/login" className="text-sm text-indigo-600 hover:underline">Login here</Link></p>
         </form>
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">Or sign up with</p>

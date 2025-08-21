@@ -24,14 +24,14 @@ const productSlice = createSlice({
     },
     extraReducers : (builder) => {
         builder
-        .addCase(fetchProducts.pending, (state, action)=>{
+        .addCase(fetchProducts.pending, (state)=>{
             state.status = STATUSES.LOADING
         })
         .addCase(fetchProducts.fulfilled,(state, action)=>{
             state.data = action.payload;
             state.status = STATUSES.SUCCESS;
         })
-        .addCase(fetchProducts.rejected, (state, action)=>{
+        .addCase(fetchProducts.rejected, (state)=>{
             state.status = STATUSES.ERROR;
         })
     },

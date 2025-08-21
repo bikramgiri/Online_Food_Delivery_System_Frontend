@@ -1,6 +1,83 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { loginUser } from '../../store/authSlice';
+import { STATUSES } from '../../global/statuses';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { token, status} = useSelector((state) => state.auth)
+  const [userData, setUserData] = useState({
+    email: '',
+    password: '',
+  })
+
+  const [emailError, setEmailError] = useState(''); // For email validation error
+  const [passwordError, setPasswordError] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData({
+      ...userData,
+      [name]: value,
+    })
+    if (name === 'email') {
+      setEmailError(''); // Clear email error on change
+    }
+    if (name === 'password') {
+      setPasswordError(''); // Clear password error on change
+    }
+    setLoginError(''); // Clear login error on change
+  }
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 6; // Matches backend validation
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setLoginError(''); // Clear previous login errors
+    if (!validateEmail(userData.email)) {
+      setEmailError('Invalid email address');
+      return;
+    }
+    if (!validatePassword(userData.password)) {
+      setPasswordError('Password must be at least 6 characters long');
+      return;
+    }
+    dispatch(loginUser(userData))
+        if (status === STATUSES.SUCCESS) {
+          // Save token to cookies
+          document.cookie = `token=${token}; path=/`;
+          // Save token to localStorage
+          localStorage.setItem('token', token);
+          return navigate('/');
+        }
+        if (status === STATUSES.ERROR) {
+          alert('Login failed. Please try again.')
+          return;
+        }
+  }
+
+  // useEffect(() => {
+  //   if (status === STATUSES.SUCCESS) {
+  //     // save token in cookies
+  //     document.cookie = `token=${token}; path=/`;
+  //     // Save token to localStorage
+  //     // localStorage.setItem('token', token);
+  //     return navigate('/');
+  //   } else if (status === STATUSES.ERROR) {
+  //     setLoginError('Login failed. Please check your email or password.');
+  //   }
+  // }, [status, token, navigate]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
@@ -10,24 +87,31 @@ const Login = () => {
           </svg> */}
         </div>
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">Login into your account</h2>
-        <form className="space-y-4">
+        {loginError && <p className="text-red-500 text-center mb-4">{loginError}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
             <input
               type="email"
               id="email"
+              name='email'
+              onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="your@email.com"
             />
+            {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
           </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
               id="password"
+              name='password'
+              onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="••••••••"
             />
+            {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -38,15 +122,16 @@ const Login = () => {
               />
               <label htmlFor="remember" className="ml-2 block text-sm text-gray-900">Remember me</label>
             </div>
-            <a href="#" className="text-sm text-indigo-600 hover:underline">Forgot password?</a>
+            <Link to="/forgotPassword" className="text-sm text-indigo-600 hover:underline">Forgot password?</Link>
           </div>
           <button
             type="submit"
+            disabled={status === STATUSES.LOADING}
             className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Login
+            {status === STATUSES.LOADING ? 'Logging in...' : 'Login'}
           </button>
-        <p className="text-sm ml-25 text-gray-600">Don't have an account?  <a href="/register" className="text-sm text-indigo-600 hover:underline">Sign up here</a></p>
+        <p className="text-sm ml-25 text-gray-600">Don't have an account?  <Link to="/register" className="text-sm text-indigo-600 hover:underline">Sign up here</Link></p>
         </form>
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">Or login with</p>
