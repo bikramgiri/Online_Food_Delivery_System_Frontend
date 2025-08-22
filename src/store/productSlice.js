@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import API from "../http";
 
 const API_URL = import.meta.env.API_URL || 'http://localhost:3000';
 const STATUSES = Object.freeze({
@@ -13,6 +13,7 @@ const productSlice = createSlice({
   initialState: {
       data: [],
       state: STATUSES.SUCCESS,
+      selectedProduct: {}
   },
   reducers: {
       setProducts: (state, action) => {
@@ -20,6 +21,9 @@ const productSlice = createSlice({
       },
       setStatus: (state, action) => {
           state.status = action.payload;
+      },
+      setSelectedProduct: (state, action) => {
+          state.selectedProduct = action.payload;
       },
     },
     extraReducers : (builder) => {
@@ -37,20 +41,33 @@ const productSlice = createSlice({
     },
 });
 
-export const { setProducts, setStatus } = productSlice.actions
+export const { setProducts, setStatus, setSelectedProduct } = productSlice.actions
 export default productSlice.reducer
 
  // *Fetch products methods 1:
 
+// export const fetchProducts = createAsyncThunk("products/fetch", async() => {
+//     try {
+//         const response = await axios.get(`${API_URL}/admin/products`);
+//         const data = response.data.data
+//         return data
+//     } catch (error) {
+//       console.log("Failed to fetch products:", error);
+//     }
+// });
+
+// **OR
+
 export const fetchProducts = createAsyncThunk("products/fetch", async() => {
     try {
-        const response = await axios.get(`${API_URL}/admin/products`);
+        const response = await API.get('/admin/products')
         const data = response.data.data
         return data
     } catch (error) {
       console.log("Failed to fetch products:", error);
     }
 });
+
 
  // *Fetch products methods 2:
 
@@ -67,3 +84,23 @@ export const fetchProducts = createAsyncThunk("products/fetch", async() => {
 //         }
 //       }
 // }
+
+
+// Fetch Single product
+export function fetchSingleProduct(productId){
+      return async function fetchSingleProductThunk(dispatch) {
+        dispatch(setStatus(STATUSES.LOADING));
+        try {
+            const response = await API.get(`/admin/products/${productId}`);
+            dispatch(setSelectedProduct(response.data.data));
+            dispatch(setStatus(STATUSES.SUCCESS));
+        } catch (error) {
+            console.log("Failed to fetch product:", error);
+            dispatch(setStatus(STATUSES.ERROR));
+        }
+      }
+}
+
+
+
+

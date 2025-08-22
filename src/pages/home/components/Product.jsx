@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../../store/cartSlice';
 import { fetchProducts } from '../../../store/productSlice';
+import { Link } from 'react-router-dom';
 
 const API_URL = import.meta.env.API_URL || 'http://localhost:3000';
 
@@ -12,11 +13,12 @@ const Product = () => {
   const dispatch = useDispatch()
   
   // *Fetch products methods 1:
-  const {data: products, status} = useSelector((state)=>state.product)
+  const {selectedProduct, data: products, status} = useSelector((state)=>state.product)
+  const reviews = selectedProduct.productReviews
 
     useEffect(() => {
     dispatch(fetchProducts());
-  }, [])
+  }, [dispatch])
 
   if(status == "loading"){
     return <h1>Loading...</h1>
@@ -47,7 +49,7 @@ const Product = () => {
 
   return (
   <>
-<section className="bg-yellow-00 py-8 antialiased md:py-12">
+  <section className="bg-yellow-00 py-8 antialiased md:py-12">
         <div className="ml-8 mr-8 mx-auto max-w-screen-2xl px-4 2xl:px-0">
           {/* Heading & Filters */}
           <div className="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
@@ -101,11 +103,12 @@ const Product = () => {
           <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
             {products.length > 0 ? (
               products.map((product) => (
-                <div key={product._id} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-600">
+                <Link to={`/productdetails/${product._id}`} key={product._id}>
+                <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-600">
                   <div className="h-56 w-full">
-                    <a href="#">
+                    <Link to="#">
                       <img className="mx-auto h-full" src={product.productImage} alt={product.productName} />
-                    </a>
+                    </Link>
                   </div>
                   <div className="pt-6">
                     <div className="mb-4 flex items-center justify-between gap-4">
@@ -140,7 +143,7 @@ const Product = () => {
 
                     <div className="mt-2 flex items-center gap-2">
                       <span className=" dark:bg-yellow-600 text-white text-sm font-semibold px-2.5 py-0.5 rounded">4.5 ★</span>
-                      <span className="text-sm dark:text-white ml-2">1,234 reviews</span>
+                      <span className="text-sm dark:text-white ml-2">{reviews?.length || 0} reviews</span>
                     </div>
 
                     <ul className="mt-2 flex items-center gap-4">
@@ -172,7 +175,9 @@ const Product = () => {
                     </div>
                   </div>
                 </div>
-              ))
+              </Link>
+              )
+              )
             ) : (
               <p className="text-center col-span-4">No products available.</p>
             )}
@@ -181,8 +186,8 @@ const Product = () => {
             <button type="button" className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Show more</button>
           </div>
         </div>
-  {/* <!-- Filter modal --> */}
-  <form action="" method="get" id="filterModal" tabIndex="-1" aria-hidden="true" className="fixed left-0 right-0 top-0 z-50 hidden h-modal w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full">
+      {/* <!-- Filter modal --> */}
+      <form action="" method="get" id="filterModal" tabIndex="-1" aria-hidden="true" className="fixed left-0 right-0 top-0 z-50 hidden h-modal w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full">
     <div className="relative h-full w-full max-w-xl md:h-auto">
       {/* <!-- Modal content --> */}
       <div className="relative rounded-lg bg-white shadow dark:bg-gray-800">
@@ -791,9 +796,9 @@ const Product = () => {
         </div>
       </div>
     </div>
-  </form>
-</section>
-    </>
+      </form>
+  </section>
+  </>
   )
 }
 
