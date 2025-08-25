@@ -1,7 +1,6 @@
 // import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem } from '../../../store/cartSlice';
 import { fetchProducts } from '../../../store/productSlice';
 import { Link } from 'react-router-dom';
 
@@ -42,10 +41,6 @@ const Product = () => {
   // useEffect(() => {
   //   fetchProducts();
   // }, [])
-
-  const addToCart = (product) => {
-    dispatch(addItem(product))
-  }
 
   return (
   <>
@@ -106,12 +101,12 @@ const Product = () => {
                 <Link to={`/productdetails/${product._id}`} key={product._id}>
                 <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-600">
                   <div className="h-56 w-full">
-                    <Link to="#">
+                    <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-md bg-gray-100">
                       <img className="mx-auto h-full" src={product.productImage} alt={product.productName} />
-                    </Link>
+                    </div>
                   </div>
                   <div className="pt-6">
-                    <div className="mb-4 flex items-center justify-between gap-4">
+                    {/* <div className="mb-4 flex items-center justify-between gap-4">
                       <span className="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-white"> Up to 35% off </span>
                       <div className="flex items-center justify-end gap-1">
                         <button type="button" data-tooltip-target="tooltip-quick-look" className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
@@ -137,9 +132,9 @@ const Product = () => {
                           <div className="tooltip-arrow" data-popper-arrow=""></div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
-                    <a href="#" className="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">{product.productName}</a>
+                    <a href="#" className="text-2xl font-medium leading-tight text-gray-900 hover:underline dark:text-white">{product.productName}</a>
 
                     <div className="mt-2 flex items-center gap-2">
                       <span className=" dark:bg-yellow-600 text-white text-sm font-semibold px-2.5 py-0.5 rounded">4.5 ★</span>
@@ -164,14 +159,14 @@ const Product = () => {
 
                     <div className="mt-4 flex items-center justify-between gap-4">
                       <p className="text-xl font-medium leading-tight text-gray-900 dark:text-white">${product.productPrice}</p>
-                      <span className="mr-8 text-sm font-medium text-gray-900 dark:text-white line-through">$9,99</span>
+                      <span className="mr-60 text-sm font-medium text-gray-900 dark:text-white line-through">$9,99</span>
 
-                      <button onClick={() => addToCart(product)} type="button" className="inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium dark:text-white focus:outline-none dark:bg-yellow-600 dark:hover:bg-yellow-700">
+                      {/* <button onClick={() => addToCart(product)} type="button" className="inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium dark:text-white focus:outline-none dark:bg-yellow-600 dark:hover:bg-yellow-700">
                         <svg className="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                           <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6" />
                         </svg>
                         Add to cart
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>
@@ -183,7 +178,9 @@ const Product = () => {
             )}
           </div>
           <div className="w-full text-center">
-            <button type="button" className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Show more</button>
+            <button type="button" className="rounded-lg border px-5 py-2.5 text-sm font-medium items-center  dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700">
+              Show more
+            </button>
           </div>
         </div>
       {/* <!-- Filter modal --> */}

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import API from "../http";
+import { API } from "../http";
 
 const API_URL = import.meta.env.API_URL || 'http://localhost:3000';
 const STATUSES = Object.freeze({
