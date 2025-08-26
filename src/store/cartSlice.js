@@ -13,11 +13,14 @@ const cartSlice = createSlice({
     setItems: (state, action) => {
       state.items = action.payload;
     },
-    removeItem: (state, action) => {
-      state.items = state.items.filter((item) => item._id !== action.payload);
+    deleteItem: (state, action) => {
+      const index = state.items.findIndex((item) => item.product._id === action.payload.productId);
+      if (index !== -1) {
+        state.items.splice(index, 1);
+      }
     },
     addToFavorites: (state, action) => {
-      const item = state.items.find((item) => item._id === action.payload);
+      const item = state.items.find((item) => item.product._id === action.payload.productId);
       if (item) {
         item.isFavorite = true;
       }
@@ -26,7 +29,7 @@ const cartSlice = createSlice({
       state.status = action.payload;
     },
     updateItems: (state, action) => {
-      const index = state.items.findIndex((item) => item.product._id === action.payload.productId);
+      const index = state.items.findIndex(item => item.product._id === action.payload.productId);
       if (index !== -1) {
         state.items[index].quantity = action.payload.quantity;
       }
@@ -34,7 +37,7 @@ const cartSlice = createSlice({
   },
 });
 
-export const { setItems, removeItem, addToFavorites, setStatus, updateItems } =
+export const { setItems, deleteItem, addToFavorites, setStatus, updateItems } =
   cartSlice.actions;
 export default cartSlice.reducer;
 
@@ -72,6 +75,20 @@ export function updateCartItem({ productId, quantity }) {
     try {
       await APIAuthenticated.patch(`users/cart/${productId}`, { quantity });
       dispatch(updateItems({ productId, quantity }));
+      dispatch(setStatus(STATUSES.SUCCESS));
+    } catch (error) {
+      console.log("Failed to update cart item:", error);
+      dispatch(setStatus(STATUSES.ERROR));
+    }
+  };
+}
+
+export function deleteCartItem(productId) {
+  return async function deleteCartItemThunk(dispatch) {
+    dispatch(setStatus(STATUSES.LOADING));
+    try {
+      await APIAuthenticated.delete(`users/cart/${productId}`);
+      dispatch(deleteItem(productId));
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {
       console.log("Failed to update cart item:", error);

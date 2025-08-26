@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../store/authSlice";
@@ -7,15 +7,14 @@ import { STATUSES } from "../../global/statuses";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [message, setMessage] = useState("");
   const { token, status } = useSelector((state) => state.auth);
-  console.log("Token:", token);
+  const [message, setMessage] = useState("");
   const [userData, setUserData] = useState({
     email: "",
     password: "",
   });
 
-  const [emailError, setEmailError] = useState(""); // For email validation error
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loginError, setLoginError] = useState("");
 
@@ -25,13 +24,9 @@ const Login = () => {
       ...userData,
       [name]: value,
     });
-    if (name === "email") {
-      setEmailError(""); // Clear email error on change
-    }
-    if (name === "password") {
-      setPasswordError(""); // Clear password error on change
-    }
-    setLoginError(""); // Clear login error on change
+    if (name === "email") setEmailError("");
+    if (name === "password") setPasswordError("");
+    setLoginError("");
   };
 
   const validateEmail = (email) => {
@@ -39,90 +34,103 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
-  const validatePassword = (password) => {
-    return password.length >= 6; // Matches backend validation
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoginError(""); // Clear previous login errors
+
+    if (!userData.email || !userData.password) {
+      setLoginError("Email and password are required");
+      return;
+    }
+
     if (!validateEmail(userData.email)) {
-      setEmailError("Invalid email address");
+      setEmailError("Invalid email format");
       return;
     }
-    if (!validatePassword(userData.password)) {
-      setPasswordError("Password must be at least 6 characters long");
-      return;
-    }
-    dispatch(loginUser(userData));
-    if (status === STATUSES.SUCCESS) {
-      setMessage("User login successfully");
+
+    dispatch(loginUser(userData))
+      .unwrap()
+      .then(() => {
+        setMessage("Login successful");
+        setTimeout(() => {
+          setMessage("");
+          navigate("/");
+        }, 2000); // Delay navigation to show success message
+      })
+      .catch((error) => {
+        // const errorMsg = error.response?.data?.message || "Login failed. Please try again.";
+        if (error.response?.status === 404) {
+          setEmailError("User not found");
+        } else if (error.response?.status === 401) {
+          setPasswordError("Invalid password");
+        }
+      });
+  };
+
+  // Handle token and navigation on status change
+  useEffect(() => {
+    if (status === STATUSES.SUCCESS && token) {
+      setMessage("Login successful");
       setTimeout(() => {
         setMessage("");
-      }, 5000);
+        navigate("/");
+      }, 2000);
+    } else if (status === STATUSES.ERROR) {
+      const error = new Error("Login failed");
+      if (error.response?.status === 404) {
+        setEmailError("User not found");
+      } else if (error.response?.status === 400) {
+        setPasswordError("Invalid password");
+      } else {
+        setLoginError("Login failed. Please try again.");
+      }
     }
-    return navigate("/");
-    // if (status === STATUSES.ERROR) {
-    //   alert('Login failed. Please try again.')
-    //   return;
-    // }
-  };
+  }, [status, token, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+      <div className="bg-white mt-30 p-8 rounded-xl shadow-lg w-full max-w-md">
         <div className="flex justify-center mb-6">
-          {/* <svg className="w-8 h-8 text-indigo-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-          </svg> */}
+          {/* Logo can be added here */}
         </div>
-        {message && (
-          <p className="text-green-500 text-center mb-4">{message}</p>
-        )}
+        {message && <p className="text-green-500 text-center mb-4">{message}</p>}
+        {loginError && <p className="text-red-500 text-center mb-4">{loginError}</p>}
+        {emailError && <p className="text-red-500 text-center mb-4">{emailError}</p>}
+        {passwordError && <p className="text-red-500 text-center mb-4">{passwordError}</p>}
+
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
           Login into your account
         </h2>
-        {loginError && (
-          <p className="text-red-500 text-center mb-4">{loginError}</p>
-        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email address
             </label>
             <input
               type="email"
               id="email"
               name="email"
+              value={userData.email}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="your@email.com"
             />
-            {emailError && (
-              <p className="text-red-500 text-sm mt-1">{emailError}</p>
-            )}
+            {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
               type="password"
               id="password"
               name="password"
+              value={userData.password}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="••••••••"
             />
-            {passwordError && (
-              <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-            )}
+            {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -131,17 +139,11 @@ const Login = () => {
                 id="remember"
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
-              <label
-                htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
-              >
+              <label htmlFor="remember" className="ml-2 block text-sm text-gray-900">
                 Remember me
               </label>
             </div>
-            <Link
-              to="/forgotPassword"
-              className="text-sm text-indigo-600 hover:underline"
-            >
+            <Link to="/forgotPassword" className="text-sm text-indigo-600 hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -152,12 +154,9 @@ const Login = () => {
           >
             {status === STATUSES.LOADING ? "Logging in..." : "Login"}
           </button>
-          <p className="text-sm ml-25 text-gray-600">
+          <p className="text-sm text-gray-600 text-center">
             Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="text-sm text-indigo-600 hover:underline"
-            >
+            <Link to="/register" className="text-indigo-600 hover:underline">
               Sign up here
             </Link>
           </p>

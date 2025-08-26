@@ -694,12 +694,14 @@ const Review = () => {
           </div>
 
           <div className="mt-6 text-center">
-            <button
-              type="button"
-              className="rounded-lg border px-5 py-2.5 text-sm font-medium items-center  dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700"
-            >
-              View more reviews
-            </button>
+            {/* {reviews.length > 6 && (
+              <button
+                type="button"
+                className="rounded-lg border px-5 py-2.5 text-sm font-medium items-center  dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700"
+              >
+                View more reviews
+              </button>
+            )} */}
           </div>
         </div>
       </section>

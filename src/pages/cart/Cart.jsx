@@ -1,16 +1,18 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToFavorites, removeItem, updateCartItem } from "../../store/cartSlice";
+import { addToFavorites, deleteCartItem, updateCartItem } from "../../store/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { items: products, status } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
-  const remove = (productId) => {
-    dispatch(removeItem(productId));
+  const handleDeleteItem = (productId) => {
+    dispatch(deleteCartItem(productId));
   };
 
-  const favorite = (productId) => {
+  const handleFavoriteItem = (productId) => {
     dispatch(addToFavorites(productId));
   };
 
@@ -21,15 +23,19 @@ const Cart = () => {
   const totalItemsInCart = products.reduce((total, item) => total + item.quantity, 0);
   const totalPriceOfCart = products.reduce((price, item) => price + item.product.productPrice * item.quantity, 0);
 
+  const itemsAmount = totalPriceOfCart;
+  const shippingCost = 200; 
+  const totalAmount = itemsAmount + shippingCost;
+
   return (
     <>
-      <section className="bg-white py-12 antialiased bg-yellow-00">
-        <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-          <h1 className="font-bold text-3xl text-yellow-900 md:text-3xl text-center">
+      <section className="py-12 antialiased bg-gray-600">
+        <div className="mx-auto mt-20 max-w-screen-xl px-4 2xl:px-0">
+          <h1 className="dark:text-white mb-0 font-bold text-3xl md:text-3xl text-center">
             Cart Items
           </h1>
 
-          <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
+          <div className="sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
             <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
               <div className="space-y-6">
                 {status === "loading" ? (
@@ -58,6 +64,7 @@ const Cart = () => {
                         </label>
                         <div className="flex items-center justify-between md:order-3 md:justify-end">
                           <div className="flex items-center">
+                            <p className="font-medium dark:text-white mr-4">Quantity:</p>
                             <button
                               type="button"
                               onClick={() => handleQuantityChange(product.product._id, product.quantity - 1)}
@@ -87,7 +94,7 @@ const Cart = () => {
                               data-input-counter
                               className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
                               placeholder=""
-                              defaultValue={product.quantity}
+                              value={product.quantity}
                               onChange={(e) => handleQuantityChange(product.product._id, e.target.value)}
                               required
                             />
@@ -132,7 +139,7 @@ const Cart = () => {
 
                           <div className="flex items-center gap-4">
                             <button
-                              onClick={() => favorite(product._id)}
+                              onClick={() => handleFavoriteItem(product.product._id)}
                               type="button"
                               className="flex items-center py-2.5 px-5 text-sm mt-7 font-medium dark:text-white rounded-lg border dark:bg-yellow-600 dark:hover:bg-yellow-700"
                             >
@@ -157,7 +164,7 @@ const Cart = () => {
                             </button>
 
                             <button
-                              onClick={() => remove(product._id)}
+                              onClick={() => handleDeleteItem(product.product._id)}
                               type="button"
                               className="flex items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-red-600 dark:bg-yellow-600 dark:hover:bg-yellow-700"
                             >
@@ -198,10 +205,10 @@ const Cart = () => {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <dl className="flex items-center justify-between gap-4">
-                      <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                      <dt className="font-medium dark:text-white">
                         Total Items
                       </dt>
-                      <dd className="text-base font-medium text-gray-900 dark:text-white">
+                      <dd className="font-medium dark:text-white">
                         {totalItemsInCart}
                       </dd>
                     </dl>
@@ -213,42 +220,44 @@ const Cart = () => {
                       <dd className="text-base font-medium text-gray-900 dark:text-white">
                         $7,592.00
                       </dd>
-                    </dl>
-
-                    <dl className="flex items-center justify-between gap-4">
-                      <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                        Savings
-                      </dt>
-                      <dd className="text-base font-medium text-green-600">
-                        -$299.00
-                      </dd>
-                    </dl>
-
-                    <dl className="flex items-center justify-between gap-4">
-                      <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                        Tax
-                      </dt>
-                      <dd className="text-base font-medium text-gray-900 dark:text-white">
-                        $799
-                      </dd>
                     </dl> */}
+
+                    <dl className="flex items-center justify-between gap-4">
+                      <dt className="font-medium dark:text-white">
+                        Shipping Amount
+                      </dt>
+                      <dd className="font-medium text-green-600">
+                        NPR {shippingCost}
+                      </dd>
+                    </dl>
+
+                    <dl className="flex items-center justify-between gap-4">
+                      <dt className="font-medium dark:text-white">
+                        Items Amount
+                      </dt>
+                      <dd className="font-medium dark:text-white">
+                        NPR {totalPriceOfCart}
+                      </dd>
+                    </dl>
                   </div>
 
                   <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                    <dt className="text-base font-bold text-gray-900 dark:text-white">
-                      Total Price
+                    <dt className="text-xl font-bold text-gray-900 dark:text-white">
+                      Total Amount
                     </dt>
-                    <dd className="text-base font-bold text-gray-900 dark:text-white">
-                      NPR {totalPriceOfCart.toFixed(2)}
+                    <dd className="text-xl font-bold text-gray-900 dark:text-white">
+                      NPR {totalAmount.toFixed(2)}
                     </dd>
                   </dl>
                 </div>
 
                 <button
+                  onClick={() => navigate("/checkout")}
                   type="button"
-                  className="flex items-center rounded-lg px-5 py-2.5 text-sm ml-15 font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
+                  // make: text"check out "at center of button
+                  className="flex items-center justify-center w-50 rounded-lg px-5 py-2.5 text-sm ml-10 mt-8 font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
                 >
-                  Proceed to Checkout
+                  Check Out
                 </button>
 
                 <div className="flex items-center justify-center gap-2">
@@ -301,7 +310,7 @@ const Cart = () => {
                   </div>
                   <button
                     type="submit"
-                    className="flex items-center rounded-lg px-5 py-2.5 text-sm ml-20 font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
+                    className="flex items-center justify-center rounded-lg px-5 py-2.5 text-sm w-50 ml-10 font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
                   >
                     Apply Code
                   </button>

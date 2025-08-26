@@ -47,11 +47,11 @@ const Product = ({ id: productId }) => {
             </div>
 
             <div className="mt-6 sm:mt-8 lg:mt-0">
-              <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+              <h1 className="text-3xl font-medium text-gray-900 dark:text-white">
                 {product?.productName}
               </h1>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
-                <p className="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
+                <p className="text-xl font-extrabold text-gray-900 dark:text-white">
                   NPR {product?.productPrice}
                 </p>
 
@@ -125,7 +125,7 @@ const Product = ({ id: productId }) => {
                 </div>
               </div>
               {/* Product Status */}
-              <div className="mt-2">
+              <div className="mt-2 flex gap-6 mt-6">
                 <p className="text-sm font-medium leading-none dark:text-white">
                   Status: {product?.productStatus}
                 </p>

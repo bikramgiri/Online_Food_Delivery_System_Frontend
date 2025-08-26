@@ -178,9 +178,11 @@ const Product = () => {
             )}
           </div>
           <div className="w-full text-center">
-            <button type="button" className="rounded-lg border px-5 py-2.5 text-sm font-medium items-center  dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700">
-              Show more
-            </button>
+            {products.length > 8 && (
+              <button type="button" className="rounded-lg border px-5 py-2.5 text-sm font-medium items-center  dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700">
+                Show more
+              </button>
+            )}
           </div>
         </div>
       {/* <!-- Filter modal --> */}

@@ -8,7 +8,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     data: [],
-    status: STATUSES.SUCCESS,
+    status: STATUSES.IDLE,
     token: "",
   },
   reducers: {
@@ -25,10 +25,15 @@ const authSlice = createSlice({
       state.data = [];
       state.token = null;
     },
+    resetAuth: (state) => {
+      state.data = [];
+      state.token = "";
+      state.status = STATUSES.IDLE;
+    },
   },
 });
 
-export const { setUser, setStatus, setToken, logOut } = authSlice.actions;
+export const { setUser, setStatus, setToken, logOut, resetAuth } = authSlice.actions;
 export default authSlice.reducer;
 
 // User Registration
@@ -54,10 +59,11 @@ export function registerUser(data) {
   return async function registerUserThunk(dispatch) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
-      await API.post("/auth/register", data);
+      const response = await API.post("/auth/register", data);
+      console.log("Register Response:", response.data); // Debug response
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {
-      console.log("Failed to register user:", error);
+      console.log("Failed to register user:", error.response?.data);
       dispatch(setStatus(STATUSES.ERROR));
     }
   };

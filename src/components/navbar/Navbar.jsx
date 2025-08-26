@@ -23,7 +23,8 @@ const Navbar = () => {
     dispatch(fetchCartItems());
   }, [dispatch]);
   return (
-    <>
+    // make navbar fixed
+    <div className="fixed top-0 left-0 right-0 z-50">
       {/* Top Bar */}
       <div className="bg-yellow-700 text-white py-2">
         <div className="max-w-screen-xl mx-auto flex justify-between items-center">
@@ -266,7 +267,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-    </>
+    </div>
   );
 };
 

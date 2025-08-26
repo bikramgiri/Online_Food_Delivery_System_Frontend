@@ -1,0 +1,38 @@
+import { createSlice } from "@reduxjs/toolkit";
+import { STATUSES } from "../global/statuses";
+import { APIAuthenticated } from "../http";
+
+const CheckOutSlice = createSlice({
+  name: "checkout",
+  initialState: {
+    data: [],
+    status: STATUSES.SUCCESS
+  },
+  reducers: {
+    setOrder: (state, action) => {
+      state.data.push(action.payload); // For array of orders
+    },
+    setStatus: (state, action) => {
+      state.status = action.payload; // for status
+    },
+  },
+});
+
+export const { setOrder, setStatus } = CheckOutSlice.actions;
+export default CheckOutSlice.reducer;
+
+export function createOrder(data) {
+  return async function createOrderThunk(dispatch) {
+    dispatch(setStatus(STATUSES.LOADING));
+    try {
+      const response = await APIAuthenticated.post("/users/orders", data);
+      dispatch(setOrder(response.data.data));
+      dispatch(setStatus(STATUSES.SUCCESS));
+    } catch (error) {
+      console.log("Failed to create order:", error.response?.data);
+      dispatch(setStatus(STATUSES.ERROR));
+    }
+  };
+}
+
+
