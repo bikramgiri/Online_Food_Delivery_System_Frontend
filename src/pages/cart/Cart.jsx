@@ -1,7 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToFavorites, deleteCartItem, updateCartItem } from "../../store/cartSlice";
-import { useNavigate } from "react-router-dom";
+import {
+  addToFavorites,
+  deleteCartItem,
+  updateCartItem,
+} from "../../store/cartSlice";
+import { Link, useNavigate } from "react-router-dom";
+import Loader from "../../components/loader/Loader";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -17,60 +22,83 @@ const Cart = () => {
   };
 
   const handleQuantityChange = (productId, newQuantity) => {
-    dispatch(updateCartItem({ productId, quantity: newQuantity }));
+    const quantity = Math.max(1, Number(newQuantity) || 1);
+    dispatch(updateCartItem({ productId, quantity }));
   };
 
-  const totalItemsInCart = products.reduce((total, item) => total + item.quantity, 0);
-  const totalPriceOfCart = products.reduce((price, item) => price + item.product.productPrice * item.quantity, 0);
+  // const totalItemsInCart = products.reduce((total, item) => total + item.quantity, 0);
+  // const totalPriceOfCart = products.reduce((price, item) => price + item.product.productPrice * item.quantity, 0);
+
+  // Safely handle products being undefined or not an array
+  const totalItemsInCart = Array.isArray(products)
+    ? products.reduce((total, item) => total + item.quantity, 0)
+    : 0;
+  const totalPriceOfCart = Array.isArray(products)
+    ? products.reduce(
+        (price, item) =>
+          price + (item.product?.productPrice || 0) * item.quantity,
+        0
+      )
+    : 0;
 
   const itemsAmount = totalPriceOfCart;
-  const shippingCost = 200; 
+  const shippingCost = 200;
   const totalAmount = itemsAmount + shippingCost;
 
   return (
     <>
       <section className="py-12 antialiased bg-gray-600">
         <div className="mx-auto mt-20 max-w-screen-xl px-4 2xl:px-0">
-          <h1 className="dark:text-white mb-0 font-bold text-3xl md:text-3xl text-center">
+          <h1 className="dark:text-white mb-0 font-bold text-3xl md:text-3xl">
             Cart Items
           </h1>
-
           <div className="sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
             <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
               <div className="space-y-6">
                 {status === "loading" ? (
-                  <p>Loading...</p>
+                <Loader className="dark:text-white" status="Loading..." />
+                  // <p className="dark:text-white">Loading...</p>
                 ) : !Array.isArray(products) || products.length === 0 ? (
                   <p className="text-gray-500 dark:text-gray-400">
                     Your cart is empty.
                   </p>
                 ) : (
                   products.map((product) => (
+                    // <Link to={`/productdetails/${product.product._id}`} key={product._id}>
                     <div
                       key={product._id}
-                      className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6"
+                      className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6 mb-2"
                     >
                       <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                        <a href="#" className="shrink-0 md:order-1">
+                        <Link
+                          to={`/productdetails/${product.product._id}`}
+                          className="shrink-0 md:order-1"
+                        >
                           <img
                             className="h-30 w-40 dark:block"
                             src={product.product.productImage}
                             alt={product.product.productName || "Product image"}
                           />
-                        </a>
-
+                        </Link>
                         <label htmlFor="counter-input" className="sr-only">
                           Choose quantity:
                         </label>
                         <div className="flex items-center justify-between md:order-3 md:justify-end">
                           <div className="flex items-center">
-                            <p className="font-medium dark:text-white mr-4">Quantity:</p>
+                            <p className="font-medium dark:text-white mr-4">
+                              Quantity:
+                            </p>
                             <button
                               type="button"
-                              onClick={() => handleQuantityChange(product.product._id, product.quantity - 1)}
+                              onClick={() =>
+                                handleQuantityChange(
+                                  product.product._id,
+                                  product.quantity - 1
+                                )
+                              }
                               id="decrement-button"
                               data-input-counter-decrement="counter-input"
-                              className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                              className="cursor-pointer inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
                               <svg
                                 className="h-2.5 w-2.5 text-gray-900 dark:text-white"
@@ -95,15 +123,25 @@ const Cart = () => {
                               className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
                               placeholder=""
                               value={product.quantity}
-                              onChange={(e) => handleQuantityChange(product.product._id, e.target.value)}
+                              onChange={(e) =>
+                                handleQuantityChange(
+                                  product.product._id,
+                                  e.target.value
+                                )
+                              }
                               required
                             />
                             <button
                               type="button"
-                              onClick={() => handleQuantityChange(product.product._id, product.quantity + 1)}
+                              onClick={() =>
+                                handleQuantityChange(
+                                  product.product._id,
+                                  product.quantity + 1
+                                )
+                              }
                               id="increment-button"
                               data-input-counter-increment="counter-input"
-                              className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                              className="cursor-pointer inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
                               <svg
                                 className="h-2.5 w-2.5 text-gray-900 dark:text-white"
@@ -130,18 +168,17 @@ const Cart = () => {
                         </div>
 
                         <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                          <a
-                            href="#"
-                            className="text-2xl font-medium text-gray-900 dark:text-white"
-                          >
+                          <p className="text-2xl font-medium text-gray-900 dark:text-white">
                             {product.product.productName}
-                          </a>
+                          </p>
 
                           <div className="flex items-center gap-4">
                             <button
-                              onClick={() => handleFavoriteItem(product.product._id)}
+                              onClick={() =>
+                                handleFavoriteItem(product.product._id)
+                              }
                               type="button"
-                              className="flex items-center py-2.5 px-5 text-sm mt-7 font-medium dark:text-white rounded-lg border dark:bg-yellow-600 dark:hover:bg-yellow-700"
+                              className="cursor-pointer flex items-center py-2.5 px-5 text-sm mt-7 font-medium dark:text-white rounded-lg border dark:bg-yellow-600 dark:hover:bg-yellow-700"
                             >
                               <svg
                                 className="me-1.5 h-5 w-5"
@@ -164,9 +201,11 @@ const Cart = () => {
                             </button>
 
                             <button
-                              onClick={() => handleDeleteItem(product.product._id)}
+                              onClick={() =>
+                                handleDeleteItem(product.product._id)
+                              }
                               type="button"
-                              className="flex items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-red-600 dark:bg-yellow-600 dark:hover:bg-yellow-700"
+                              className="cursor-pointer flex items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-red-600 dark:bg-yellow-600 dark:hover:bg-yellow-700"
                             >
                               <svg
                                 className="me-1.5 h-5 w-5"

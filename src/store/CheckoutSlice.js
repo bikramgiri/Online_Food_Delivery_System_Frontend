@@ -6,7 +6,8 @@ const CheckOutSlice = createSlice({
   name: "checkout",
   initialState: {
     data: [],
-    status: STATUSES.SUCCESS
+    status: STATUSES.SUCCESS,
+    orders: []
   },
   reducers: {
     setOrder: (state, action) => {
@@ -15,10 +16,13 @@ const CheckOutSlice = createSlice({
     setStatus: (state, action) => {
       state.status = action.payload; // for status
     },
+    setOrders: (state, action) => {
+      state.orders = action.payload; // for orders
+    },
   },
 });
 
-export const { setOrder, setStatus } = CheckOutSlice.actions;
+export const { setOrder, setStatus, setOrders } = CheckOutSlice.actions;
 export default CheckOutSlice.reducer;
 
 export function createOrder(data) {
@@ -35,4 +39,17 @@ export function createOrder(data) {
   };
 }
 
+export function fetchOrder() {
+  return async function fetchOrderThunk(dispatch) {
+    dispatch(setStatus(STATUSES.LOADING));
+    try {
+      const response = await APIAuthenticated.get("/users/orders");
+      dispatch(setOrders(response.data.data));
+      dispatch(setStatus(STATUSES.SUCCESS));
+    } catch (error) {
+      console.log("Failed to fetch order:", error.response?.data);
+      dispatch(setStatus(STATUSES.ERROR));
+    }
+  };
+}
 

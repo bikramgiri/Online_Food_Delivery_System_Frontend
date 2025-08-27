@@ -134,7 +134,7 @@ const Product = () => {
                       </div>
                     </div> */}
 
-                    <a href="#" className="text-2xl font-medium leading-tight text-gray-900 hover:underline dark:text-white">{product.productName}</a>
+                    <p className="text-2xl font-medium leading-tight text-gray-900 hover:underline dark:text-white">{product.productName}</p>
 
                     <div className="mt-2 flex items-center gap-2">
                       <span className=" dark:bg-yellow-600 text-white text-sm font-semibold px-2.5 py-0.5 rounded">4.5 ★</span>

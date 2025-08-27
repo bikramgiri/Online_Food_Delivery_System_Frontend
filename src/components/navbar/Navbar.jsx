@@ -66,7 +66,7 @@ const Navbar = () => {
       {/* Main Navbar */}
       <nav className="bg-white border-gray-200 dark:bg-gray-800">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <a href="/" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <img
               src="https://flowbite.com/docs/images/logo.svg"
               className="h-8 me-3"
@@ -75,7 +75,7 @@ const Navbar = () => {
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               Foods Hub
             </span>
-          </a>
+          </Link>
           <div className="flex items-center space-x-4 md:order-2">
             {/* Search Input with SVG */}
             <div className="relative">
@@ -100,7 +100,7 @@ const Navbar = () => {
               </svg>
             </div>
             {/* User Button with Dropdown */}
-            <button
+            {/* <button
               type="button"
               className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 text-white"
               id="user-menu-button"
@@ -123,9 +123,9 @@ const Navbar = () => {
                   d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4zM12 6a4 4 0 100 8 4 4 0 000-8z"
                 />
               </svg>
-            </button>
+            </button> */}
             {/* Dropdown Menu */}
-            <div
+            {/* <div
               className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600"
               id="user-dropdown"
             >
@@ -171,13 +171,15 @@ const Navbar = () => {
                   </a>
                 </li>
               </ul>
-            </div>
+            </div> */}
             {/* Cart Icon with Badge */}
+            {
+              items.length !== 0 && (
             <div className="relative">
-              <a href="#" onClick={() => navigate("/cart")}>
+              <div onClick={() => navigate("/cart")}>
                 <button
                   type="button"
-                  className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                  className="cursor-pointer text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                 >
                   <span className="sr-only">Cart</span>
                   <svg
@@ -195,11 +197,13 @@ const Navbar = () => {
                     />
                   </svg>
                 </button>
-              </a>
+              </div>
               <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
                 {items.length}
               </span>
             </div>
+            )
+            }
             {/* Hamburger Menu */}
             <button
               data-collapse-toggle="navbar-user"
@@ -232,36 +236,36 @@ const Navbar = () => {
           >
             <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-800 dark:border-gray-700">
               <li>
-                <a
-                  href="/"
+                <Link
+                  to="/"
                   className="block font-bold py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/about"
+                <Link
+                  to="/about"
                   className="block font-bold py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/stores"
+                <Link
+                  to="/profile"
                   className="block font-bold py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
-                  Stores
-                </a>
+                  Profile
+                </Link>
               </li>
               <li>
-                <a
-                  href="/contact"
+                <Link
+                  to="/contact"
                   className="block font-bold py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteCartItem } from "../../store/cartSlice";
 import { useForm } from "react-hook-form";
 import { STATUSES } from "../../global/statuses";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { createOrder } from "../../store/CheckOutSlice";
+import { APIAuthenticated } from "../../http";
 
 const CheckOut = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items: products } = useSelector((state) => state.cart);
   const { status, data } = useSelector((state) => state.checkout);
@@ -37,8 +37,14 @@ const CheckOut = () => {
     }));
   };
 
-  const totalItemsInCart = products?.reduce((total, item) => total + item.quantity, 0);
-  const totalPriceOfCart = products?.reduce((price, item) => price + item.product.productPrice * item.quantity, 0);
+  const totalItemsInCart = products?.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+  const totalPriceOfCart = products?.reduce(
+    (price, item) => price + item.product.productPrice * item.quantity,
+    0
+  );
 
   const [selectedMethod] = useState(null); // setSelectedMethod
 
@@ -118,7 +124,7 @@ const CheckOut = () => {
       ),
     },
     {
-      id: "khalti",
+      id: "Khalti",
       name: "Khalti",
       icon: (
         <svg
@@ -172,18 +178,19 @@ const CheckOut = () => {
       },
       phoneNumber: data.phoneNumber,
     };
-    dispatch(createOrder(orderDetails))
+    dispatch(createOrder(orderDetails));
   };
 
-const proceedForKhaltiPayment = () => {
+  const proceedForKhaltiPayment = () => {
     if (data && data.length > 0) {
       const latestOrder = data[data.length - 1];
       if (latestOrder && typeof latestOrder === "object") {
-        const { totalAmount, _id } = latestOrder;
+        const { totalAmount, _id: orderId } = latestOrder;
         if (paymentMethod === "Cash on Delivery") {
           alert("Order placed successfully!");
         } else if (paymentMethod === "Khalti") {
-          navigate(`/khalti?totalAmount=${totalAmount}&orderId=${_id}`);
+          // navigate(`/khalti?totalAmount=${totalAmount}&orderId=${_id}`);
+          handleKhaltiPayment(totalAmount, orderId );
         }
       }
     } else if (status === STATUSES.ERROR) {
@@ -193,11 +200,24 @@ const proceedForKhaltiPayment = () => {
 
   useEffect(() => {
     proceedForKhaltiPayment();
-  },[status, data]); 
+  }, [status, data]);
 
   const handlePaymentMethodChange = (e) => {
     setPaymentMethod(e.target.value);
   };
+
+  const handleKhaltiPayment = async(totalAmount, orderId ) =>{
+    try {
+      const response = await APIAuthenticated.post("/users/payment", {amount: totalAmount, orderId });
+      console.log("Khalti Payment Response:",response.data);
+      if (response.status === 200) {
+        window.location.href = response.data.paymentUrl;
+      }
+    } catch (error) {
+      console.error("Error processing Khalti payment:", error);
+      alert("Payment failed. Please try again.");
+    }
+  }
 
   return (
     <>
@@ -212,6 +232,9 @@ const proceedForKhaltiPayment = () => {
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-6">
+                <h1 className="dark:text-white mb-4 font-bold text-3xl md:text-3xl">
+                  Check Out
+                </h1>
                 {/* Billing Details */}
                 <div className="bg-gray-800 rounded-lg p-6">
                   <h2 className="text-xl font-semibold mb-4">
@@ -469,7 +492,7 @@ const proceedForKhaltiPayment = () => {
               </div>
 
               {/* Right Column: Cart Items and Order Summary */}
-              <div className="space-y-6">
+              <div className="mt-13 space-y-6">
                 {/* Cart Items */}
                 <div className="space-y-6">
                   {status === "loading" ? (
@@ -481,79 +504,81 @@ const proceedForKhaltiPayment = () => {
                   ) : (
                     products.length > 0 &&
                     products.map((product) => (
-                      <div
-                        key={product._id}
-                        className="rounded-lg border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4"
-                      >
-                        <div className="space-y-2 md:flex md:items-center md:justify-between md:gap-4 md:space-y-0">
-                          <a href="#" className="shrink-0 md:order-1">
-                            <img
-                              className="h-25 w-35 dark:block"
-                              src={product.product.productImage}
-                              alt={
-                                product.product.productName || "Product image"
-                              }
-                            />
-                          </a>
-
-                          <div className="flex mt-10 items-center justify-between md:order-3 md:justify-end">
-                            <div className="flex items-center">
-                              <p className="font-medium dark:text-white">
-                                Quantity:
-                              </p>
-                              <input
-                                type="text"
-                                id="counter-input"
-                                data-input-counter
-                                className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-                                placeholder=""
-                                value={product.quantity}
-                                required
-                              />
-                            </div>
-                            <div className="text-end md:order-4 md:w-32">
-                              <p className="text-base font-bold text-gray-900 dark:text-white">
-                                NPR {product.product.productPrice}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="min-w-0 ml-4 flex-1 space-y-4 md:order-2 md:max-w-md">
-                            <p className="text-2xl font-medium text-gray-900 dark:text-white">
-                              {product.product.productName}
-                            </p>
-
-                            <div className="items-center mb-4">
-                              <button
-                                onClick={() =>
-                                  handleDeleteItem(product.product._id)
+                      // <Link to={`/productdetails/${product.product._id}`}
+                        // key={product._id}
+                      // >
+                        <div
+                          key={product._id}
+                          className="rounded-lg mb-2 border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4"
+                        >
+                          <div className="space-y-2 md:flex md:items-center md:justify-between md:gap-4 md:space-y-0">
+                            <Link to={`/productdetails/${product.product._id}`} className="shrink-0 md:order-1">
+                              <img
+                                className="h-25 w-35 dark:block"
+                                src={product.product.productImage}
+                                alt={
+                                  product.product.productName || "Product image"
                                 }
-                                type="button"
-                                className="flex items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-red-600 dark:bg-yellow-600 dark:hover:bg-yellow-700"
-                              >
-                                <svg
-                                  className="me-1.5 h-5 w-5"
-                                  aria-hidden="true"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="24"
-                                  height="24"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
+                              />
+                            </Link>
+                            <div className="flex mt-10 items-center justify-between md:order-3 md:justify-end">
+                              <div className="flex items-center">
+                                <p className="font-medium dark:text-white">
+                                  Quantity:
+                                </p>
+                                <input
+                                  type="text"
+                                  id="counter-input"
+                                  data-input-counter
+                                  className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+                                  placeholder=""
+                                  defaultValue={product.quantity}
+                                  required
+                                />
+                              </div>
+                              <div className="text-end md:order-4 md:w-32">
+                                <p className="text-base font-bold text-gray-900 dark:text-white">
+                                  NPR {product.product.productPrice}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="min-w-0 ml-4 flex-1 space-y-4 md:order-2 md:max-w-md">
+                              <p className="text-2xl font-medium text-gray-900 dark:text-white">
+                                {product.product.productName}
+                              </p>
+
+                              <div className="items-center mb-4">
+                                <button
+                                  onClick={() =>
+                                    handleDeleteItem(product.product._id)
+                                  }
+                                  type="button"
+                                  className="cursor-pointer flex items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-red-600 dark:bg-yellow-600 dark:hover:bg-yellow-700"
                                 >
-                                  <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M6 18 17.94 6M18 18 6.06 6"
-                                  />
-                                </svg>
-                                Remove
-                              </button>
+                                  <svg
+                                    className="me-1.5 h-5 w-5"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke="currentColor"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M6 18 17.94 6M18 18 6.06 6"
+                                    />
+                                  </svg>
+                                  Remove
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
                     ))
                   )}
                 </div>
@@ -581,15 +606,32 @@ const proceedForKhaltiPayment = () => {
                       NPR {totalAmount.toFixed(2)}
                     </p>
                   </div>
-                  <button className="flex ml-50 items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700">
+                  {/* <button className="flex ml-50 items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700">
                     Continue to payment
-                  </button>
-                  <a
-                    href="#"
+                  </button> */}
+                  {/* // make : pay with Cash on Delivery, khalti  and esewa */}
+                  {
+                    paymentMethod === "Cash on Delivery" ? (
+                      <button type="submit" className="flex ml-50 items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700">
+                        Continue to payment
+                      </button>
+                    ) : paymentMethod === "Khalti" ? (
+                      <button type="submit" className="flex ml-50 items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-white dark:bg-purple-600 dark:hover:bg-purple-700">
+                        Pay with Khalti
+                      </button>
+                    ) : (
+                      <button type="submit" className="flex ml-50 items-center py-2.5 px-5 text-sm font-medium mt-7 rounded-lg border dark:text-white dark:bg-green-600 dark:hover:bg-green-700">
+                        Pay with Esewa
+                      </button>
+                    )
+                  }
+
+                  <Link
+                    to="/"
                     className="text-sm mt-4 text-gray-400 hover:underline flex justify-center"
                   >
                     or Return to Shopping →
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
