@@ -15,6 +15,7 @@ import CheckOut from './pages/checkout/CheckOut'
 import PaymentSuccess from './pages/khalti/Paymentsuccess'
 import UserProfile from './pages/profile/UserProfile'
 import MyOrders from './pages/myOrders/MyOrders'
+import OrderDetails from './pages/orderDetails/OrderDetails'
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
           <Route path="/productdetails/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
+          <Route path="/orderdetails/:id" element={<OrderDetails />} />
         </Routes>
       <Footer />
     </BrowserRouter>
