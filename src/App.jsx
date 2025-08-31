@@ -16,6 +16,7 @@ import PaymentSuccess from './pages/khalti/Paymentsuccess'
 import UserProfile from './pages/profile/UserProfile'
 import MyOrders from './pages/myOrders/MyOrders'
 import OrderDetails from './pages/orderDetails/OrderDetails'
+import Dashboard from './pages/admin/dashboard/Dashboard'
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
           <Route path="/orderdetails/:id" element={<OrderDetails />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
         </Routes>
       <Footer />
     </BrowserRouter>
