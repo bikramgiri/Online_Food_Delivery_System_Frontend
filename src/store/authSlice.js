@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STATUSES } from "../global/statuses";
-import { API } from "../http";
+import { API, APIAuthenticated } from "../http";
 
 const API_URL = import.meta.env.API_URL || "http://localhost:3000";
 
@@ -104,3 +104,21 @@ export function loginUser(data) {
     }
   };
 }
+
+
+// fetch profile
+export function fetchUserProfile() {
+  return async function fetchUserProfileThunk(dispatch) {
+    dispatch(setStatus(STATUSES.LOADING));
+    try {
+      const response = await APIAuthenticated.get("/users/profile");
+      console.log("Profile Response:", response.data); // Debug response
+      dispatch(setUser(response.data));
+      dispatch(setStatus(STATUSES.SUCCESS));
+    } catch (error) {
+      console.log("Failed to fetch user profile:", error.response?.data);
+      dispatch(setStatus(STATUSES.ERROR));
+    }
+  };
+}
+

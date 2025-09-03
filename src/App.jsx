@@ -17,6 +17,7 @@ import UserProfile from './pages/profile/UserProfile'
 import MyOrders from './pages/myOrders/MyOrders'
 import OrderDetails from './pages/orderDetails/OrderDetails'
 import Dashboard from './pages/admin/dashboard/Dashboard'
+import { ProtectedRouteForAdmin, ProtectedRouteForCustomer } from './pages/ProtectedRoute'
 
 function App() {
 
@@ -31,7 +32,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/profile" element={<ProtectedRouteForCustomer allowedRoles={['customer']}><UserProfile /></ProtectedRouteForCustomer>} />
           <Route path="/myorders" element={<MyOrders />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -40,7 +41,7 @@ function App() {
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
           <Route path="/orderdetails/:id" element={<OrderDetails />} />
-          <Route path="/admin/dashboard" element={<Dashboard />} />
+          {/* <Route path="/admin" element={<ProtectedRouteForAdmin allowedRoles={['customer']}><Dashboard /></ProtectedRouteForAdmin>} /> */}
         </Routes>
       <Footer />
     </BrowserRouter>

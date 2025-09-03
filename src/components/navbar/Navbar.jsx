@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { logOut } from "../../store/authSlice";
+import { fetchUserProfile, logOut } from "../../store/authSlice";
 import { fetchCartItems } from "../../store/cartSlice";
 
 const Navbar = () => {
@@ -20,8 +20,7 @@ const Navbar = () => {
 
   useEffect(() => {
     dispatch(fetchCartItems());
-    // Fetch notifications count if needed
-    // setNotifications(3); // Mock data
+    dispatch(fetchUserProfile());
   }, [dispatch]);
 
   // handle notifications
