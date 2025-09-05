@@ -1,22 +1,21 @@
 import React from "react";
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 
-import store from './store/store'
-
 import RtlLayout from "./layouts/rtl";
 import AdminLayout from "./layouts/admin";
 import AuthLayout from "./layouts/auth";
-import AdminLogin from "./pages/auth/Login";
 import { Provider } from "react-redux";
 import ProtectedRoute from "./ProtectedRoute";
+import store from './store/store'
+import Login from "./pages/auth/Login";
 const App = () => {
   return (
     <>
       <Provider store={store}>
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
-            <Route path="/" element={<AdminLogin />} />
-            <Route path="admin/*" element={<AdminLayout />} />
+            <Route path="/" element={<Login />} />
+            <Route path="admin/*" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>} />
             {/* <Route path="rtl/*" element={<RtlLayout />} /> */}
             {/* <Route path="/" element={<Navigate to="/admin" replace />} /> */}
           </Routes>
