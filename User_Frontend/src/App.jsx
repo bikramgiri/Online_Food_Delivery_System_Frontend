@@ -32,7 +32,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/profile" element={<ProtectedRouteForCustomer allowedRoles={['customer']}><UserProfile /></ProtectedRouteForCustomer>} />
+          <Route path="/profile" element={<ProtectedRouteForCustomer><UserProfile /></ProtectedRouteForCustomer>} />
           <Route path="/myorders" element={<MyOrders />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -41,7 +41,7 @@ function App() {
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
           <Route path="/orderdetails/:id" element={<OrderDetails />} />
-          {/* <Route path="/admin" element={<ProtectedRouteForAdmin allowedRoles={['customer']}><Dashboard /></ProtectedRouteForAdmin>} /> */}
+          <Route path="/admin" element={<ProtectedRouteForAdmin><Dashboard /></ProtectedRouteForAdmin>} />
         </Routes>
       <Footer />
     </BrowserRouter>
