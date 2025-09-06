@@ -101,7 +101,7 @@ const Order = () => {
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-700 pb-4 mb-6">
             <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">
-              My Orders
+              All Orders
             </h2>
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative">
