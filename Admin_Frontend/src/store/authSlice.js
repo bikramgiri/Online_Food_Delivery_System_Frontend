@@ -65,7 +65,6 @@ export function fetchUserProfile() {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get("/users/profile");
-      console.log("Profile Response:", response.data); // Debug response
       dispatch(setUser(response.data.data));
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {

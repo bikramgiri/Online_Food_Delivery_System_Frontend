@@ -1,19 +1,20 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchOrders } from "../../../store/orderSlice";
 
 const Order = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { orders } = useSelector((state) => state.checkout);
+  const { orders } = useSelector((state) => state.order);
   const [selectedItem, setSelectedItem] = useState("all-orders");
   const [selectedTime, setSelectedTime] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [date, setDate] = useState("");
 
-  // useEffect(() => {
-  //   dispatch(fetchOrder());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
 
   // Function to format date: Thusrsday Aug 25, 2025
   const formatDate = (dateString) => {
@@ -96,7 +97,7 @@ const Order = () => {
 
   return (
     <section className="bg-gray-900 min-h-screen py-12 antialiased text-gray-300">
-      <div className="mt-24 max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-700 pb-4 mb-6">
             <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">
@@ -201,9 +202,9 @@ const Order = () => {
                       <td className="py-4 px-4 text-center">
                         {order.orderStatus === "pending" ? (
                           <div>
-                            <dd class="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
+                            <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
                               <svg
-                                class="me-1 h-3 w-3"
+                                className="me-1 h-3 w-3"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -213,9 +214,9 @@ const Order = () => {
                               >
                                 <path
                                   stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
                                   d="M5 11.917 9.724 16.5 19 7.5"
                                 />
                               </svg>
@@ -236,9 +237,9 @@ const Order = () => {
                               >
                                 <path
                                   stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
                                   d="M5 11.917 9.724 16.5 19 7.5"
                                 />
                               </svg>
@@ -247,9 +248,9 @@ const Order = () => {
                           </div>
                         ) : order.orderStatus === "cancelled" ? (
                           <div>
-                            <dd class="me-2 mt-1.5 inline-flex items-center rounded bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">
+                            <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">
                               <svg
-                                class="me-1 h-3 w-3"
+                                className="me-1 h-3 w-3"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -259,9 +260,9 @@ const Order = () => {
                               >
                                 <path
                                   stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
                                   d="M6 18 17.94 6M18 18 6.06 6"
                                 />
                               </svg>

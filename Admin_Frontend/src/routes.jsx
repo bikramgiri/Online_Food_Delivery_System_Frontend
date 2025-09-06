@@ -2,6 +2,7 @@ import React from "react";
 
 // Auth Imports
 // import SignIn from "./pages/auth/SignIn";
+import ReviewIcon from './components/icons/ReviewsIcon'
 
 // Icon Imports
 import {
@@ -10,15 +11,16 @@ import {
   MdBarChart,
   MdPerson,
   MdLock,
+  MdReviews
 } from "react-icons/md";
 
 // Admin Imports
 import Dashboard from "./pages/admin/dashboard/Dashboard";
-import Products from "./pages/admin/product/Product";
+import Products from "./pages/admin/products/Product";
 // import RTLDefault from "./pages/rtl/default";
-import Orders from "./pages/admin/order/Order";
-import Users from "./pages/admin/user/User";
-import Reviews from "./pages/admin/review/Review";
+import Orders from "./pages/admin/orders/Order";
+import Users from "./pages/admin/users/User";
+import Reviews from "./pages/admin/reviews/Review";
 
 
 // Pre-rendered icon components
@@ -62,7 +64,7 @@ const routes = [
     name: "Reviews",
     layout: "/admin",
     path: "reviews",
-    icon: <MdLock className="h-6 w-6" />,
+    icon: <MdReviews className="h-6 w-5" />,
     component: Reviews,
   },
   // {
