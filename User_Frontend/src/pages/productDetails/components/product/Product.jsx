@@ -165,7 +165,9 @@ const Product = ({ id: productId }) => {
                   // onClick={() => addToCart(product)}
                   onClick={handleAddToCart}
                   type="button"
-                  className="flex items-center rounded-lg px-5 py-2.5 text-sm font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
+                  // displable Add to Cart button if Stock quantity is 0  
+                  disabled={product?.productStockQty === 0}
+                  className="disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center rounded-lg px-5 py-2.5 text-sm font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
                 >
                   <svg
                     className="-ms-2 me-2 h-5 w-5"

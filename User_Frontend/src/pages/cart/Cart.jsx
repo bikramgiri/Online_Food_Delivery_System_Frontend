@@ -20,9 +20,15 @@ const Cart = () => {
   const handleFavoriteItem = (productId) => {
     dispatch(addToFavorites(productId));
   };
-
+ 
+  // make user can not increase quantity more than stock quantity
+  
   const handleQuantityChange = (productId, newQuantity) => {
     const quantity = Math.max(1, Number(newQuantity) || 1);
+    const product = products.find((item) => item.product._id === productId);
+    if (product && quantity > product.product.productStockQty) {
+      return;
+    }
     dispatch(updateCartItem({ productId, quantity }));
   };
 
@@ -97,8 +103,9 @@ const Cart = () => {
                                 )
                               }
                               id="decrement-button"
+                              disabled={product.quantity === 1}
                               data-input-counter-decrement="counter-input"
-                              className="cursor-pointer inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                              className="disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200 cursor-pointer inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
                               <svg
                                 className="h-2.5 w-2.5 text-gray-900 dark:text-white"
@@ -140,8 +147,9 @@ const Cart = () => {
                                 )
                               }
                               id="increment-button"
+                              disabled={product.quantity === product.product.productStockQty}
                               data-input-counter-increment="counter-input"
-                              className="cursor-pointer inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                              className="disabled:cursor-not-allowed  cursor-pointer inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
                               <svg
                                 className="h-2.5 w-2.5 text-gray-900 dark:text-white"
