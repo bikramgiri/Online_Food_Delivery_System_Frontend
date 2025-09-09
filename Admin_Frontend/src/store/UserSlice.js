@@ -15,10 +15,18 @@ const UserSlice = createSlice({
     setUsers: (state, action) => {
       state.users = action.payload;
     },
+    deleteUserById: (state, action) => {
+      const index = state.users.findIndex(
+        (user) => user._id === action.payload.userId
+      );
+      if (index !== -1) {
+        state.users.splice(index, 1);
+      }
+    },
   },
 });
 
-export const { setStatus, setUsers } = UserSlice.actions;
+export const { setStatus, setUsers, deleteUserById } = UserSlice.actions;
 export default UserSlice.reducer;
 
 export function fetchUsers() {
@@ -26,7 +34,7 @@ export function fetchUsers() {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get("/admin/users");
-      dispatch(setUsers(response.data.data));
+      dispatch(setUsers(response.data.data.reverse()));
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {
       console.log("Failed to fetch users:", error.response?.data);
@@ -35,3 +43,18 @@ export function fetchUsers() {
   };
 }
 
+export function deleteUser(userId) {
+  return async function deleteUserThunk(dispatch) {
+    dispatch(setStatus(STATUSES.LOADING));
+    try {
+      await APIAuthenticated.delete(
+        `/admin/users/${userId}`
+      );
+      dispatch(deleteUserById({ userId }));
+      dispatch(setStatus(STATUSES.SUCCESS));
+    } catch (error) {
+      console.log("Failed to fetch user:", error.response?.data);
+      dispatch(setStatus(STATUSES.ERROR));
+    }
+  };
+}

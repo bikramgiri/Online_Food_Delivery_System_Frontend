@@ -24,17 +24,30 @@ const OrderSlice = createSlice({
         state.orders.splice(index, 1);
       }
     },
-updateOrderStatusById: (state, action) => {
-      // const { orderId, status } = action.payload;
-      const index = state.orders.findIndex((order) => order._id === action.payload.orderId);
+    updateOrderStatusById: (state, action) => {
+      const { orderId, orderStatus } = action.payload;
+      const index = state.orders.findIndex((order) => order._id === orderId);
       if (index !== -1) {
-        state.orders[index].status = action.payload.data;
+        state.orders[index].orderStatus = orderStatus;
+      }
+    },
+    updatePaymentStatusById: (state, action) => {
+      const { orderId } = action.payload;
+      const index = state.orders.findIndex((order) => order._id === orderId);
+      if (index !== -1) {
+        state.orders[index] = action.payload.data;
       }
     },
   },
 });
 
-export const { setStatus, setOrders, deleteOrderById, updateOrderStatusById } = OrderSlice.actions;
+export const {
+  setStatus,
+  setOrders,
+  deleteOrderById,
+  updateOrderStatusById,
+  updatePaymentStatusById,
+} = OrderSlice.actions;
 export default OrderSlice.reducer;
 
 export function fetchOrders() {
@@ -42,7 +55,7 @@ export function fetchOrders() {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get("/admin/orders");
-      dispatch(setOrders(response.data.data));
+      dispatch(setOrders(response.data.data.reverse()));
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {
       console.log("Failed to fetch order:", error.response?.data);
@@ -60,8 +73,9 @@ export function deleteOrders(orderId) {
       );
       dispatch(deleteOrderById({ orderId }));
       dispatch(setStatus(STATUSES.SUCCESS));
-      if (response.status === 200) {
-        window.location.href = "/admin/orders"; // Redirect to orders page
+      // make: If delete is triggred from single order page then redirect to orders page
+      if (response.status === 200 && window.location.pathname === `/admin/orders/${orderId}`) {
+        window.location.href = "/admin/orders";
       }
     } catch (error) {
       console.log("Failed to fetch order:", error.response?.data);
@@ -70,22 +84,59 @@ export function deleteOrders(orderId) {
   };
 }
 
-
-export function updateOrdersStatus(orderId, status) {
+export function updateOrdersStatus(orderId, orderStatus) {
   return async function updateOrderStatusThunk(dispatch) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
-      const response = await APIAuthenticated.patch(`/admin/orders/${orderId}`, {
-        status,
-      });
+      const response = await APIAuthenticated.patch(
+        `/admin/orders/${orderId}`,
+        {
+          orderStatus,
+        }
+      );
       console.log("Update response:", response);
-      dispatch(updateOrderStatusById({ orderId, data: response.data.data }));
+      dispatch(
+        updateOrderStatusById({
+          orderId,
+          orderStatus: response.data.data.orderStatus,
+        })
+      );
+      dispatch(fetchOrders()); // Refetch to ensure state is updated
       dispatch(setStatus(STATUSES.SUCCESS));
       // if (response.status === 200) {
       //   window.location.href = `/orderdetails/${orderId}`; // Redirect after update
       // }
     } catch (error) {
       console.log("Failed to update order status:", error.response?.data);
+      dispatch(setStatus(STATUSES.ERROR));
+    }
+  };
+}
+
+export function updatePaymentStatus(orderId, paymentStatus) {
+  return async function updatePaymentStatusThunk(dispatch) {
+    dispatch(setStatus(STATUSES.LOADING));
+    try {
+      const response = await APIAuthenticated.patch(
+        `/admin/order/paymentstatus/${orderId}`,
+        {
+          paymentStatus, // Send nested field
+        }
+      );
+      console.log("Update response:", response);
+      dispatch(
+        updatePaymentStatusById({
+          orderId,
+          data: response.data.data
+        })
+      );
+      dispatch(fetchOrders()); // Refetch to ensure state is updated
+      dispatch(setStatus(STATUSES.SUCCESS));
+      // if (response.status === 200) {
+      //   window.location.href = `/orderdetails/${orderId}`; // Redirect after update
+      // }
+    } catch (error) {
+      console.log("Failed to update payment status:", error.response?.data);
       dispatch(setStatus(STATUSES.ERROR));
     }
   };

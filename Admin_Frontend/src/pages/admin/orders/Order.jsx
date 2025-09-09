@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchOrders } from "../../../store/orderSlice";
+import { deleteOrders, fetchOrders } from "../../../store/orderSlice";
+import { STATUSES } from "../../../global/statuses";
 
 const Order = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { orders } = useSelector((state) => state.order);
+  const { orders, status } = useSelector((state) => state.order);
+  const [message, setMessage] = useState("");
   const [selectedItem, setSelectedItem] = useState("all-orders");
   const [selectedTime, setSelectedTime] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,6 +76,7 @@ const Order = () => {
   const searchedOrders = timeFilteredOrders.filter(
     (order) =>
       order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.paymentDetails.method
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
@@ -95,8 +98,21 @@ const Order = () => {
       : true;
   });
 
+    const deleteOrder = (id) => {
+      dispatch(deleteOrders(id));
+      if (status === STATUSES.SUCCESS) {
+        setMessage("Order deleted successfully");
+        setTimeout(() => {
+          setMessage("");
+        }, 2000);
+      }
+    };
+
   return (
     <section className="bg-gray-900 min-h-screen py-12 antialiased text-gray-300">
+    {message && (
+      <p className="text-green-500 text-center mb-8">{message}</p>
+    )}
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-700 pb-4 mb-6">
@@ -114,7 +130,7 @@ const Order = () => {
                   <option value="pending">Pending</option>
                   <option value="pre-order">Pre-order</option>
                   <option value="transit">In Transit</option>
-                  <option value="confirmed">Confirmed</option>
+                  <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
               </div>
@@ -176,10 +192,11 @@ const Order = () => {
               <thead>
                 <tr className="bg-gray-700 text-gray-200 uppercase text-xs font-semibold">
                   <th className="py-4 px-4 text-center">Order ID</th>
-                  <th className="py-4 px-4 text-center">Date</th>
+                  <th className="py-4 px-4 text-center">User Name</th>
                   <th className="py-4 px-4 text-center">Total Amount</th>
                   <th className="py-4 px-4 text-center">Order Status</th>
                   <th className="py-4 px-4 text-center">Payment Method</th>
+                  <th className="py-4 px-4 text-center">Date</th>
                   <th className="py-4 px-4 text-center">Action</th>
                 </tr>
               </thead>
@@ -194,13 +211,13 @@ const Order = () => {
                         {order._id}
                       </td>
                       <td className="py-4 px-4 font-medium text-center text-gray-100">
-                        {formatDate(order.createdAt)}
+                        {order.user.username}
                       </td>
                       <td className="py-4 px-4 font-medium text-center text-gray-100">
                         NPR {order.totalAmount}
                       </td>
                       <td className="py-4 px-4 text-center">
-                        {order.orderStatus === "pending" ? (
+                        {order.orderStatus === "Pending" ? (
                           <div>
                             <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
                               <svg
@@ -223,11 +240,11 @@ const Order = () => {
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "Confirmed" ? (
+                        ) : order.orderStatus === "Delivered" ? (
                           <div>
-                            <dd class="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
+                            <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
                               <svg
-                                class="me-1 h-3 w-3"
+                                className="me-1 h-3 w-3"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -246,7 +263,7 @@ const Order = () => {
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "cancelled" ? (
+                        ) : order.orderStatus === "Cancelled" ? (
                           <div>
                             <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">
                               <svg
@@ -269,11 +286,11 @@ const Order = () => {
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "transit" ? (
+                        ) : order.orderStatus === "In Transit" ? (
                           <div>
-                            <dd class="me-2 mt-1.5 inline-flex items-center rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                            <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
                               <svg
-                                class="me-1 h-3 w-3"
+                                className="me-1 h-3 w-3"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -283,20 +300,20 @@ const Order = () => {
                               >
                                 <path
                                   stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
                                   d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"
                                 />
                               </svg>
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "pre-order" ? (
+                        ) : order.orderStatus === "Pre Order" ? (
                           <div>
-                            <dd class="me-2 mt-1.5 inline-flex items-center rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
+                            <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
                               <svg
-                                class="me-1 h-3 w-3"
+                                className="me-1 h-3 w-3"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -306,9 +323,9 @@ const Order = () => {
                               >
                                 <path
                                   stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
                                   d="M18.5 4h-13m13 16h-13M8 20v-3.333a2 2 0 0 1 .4-1.2L10 12.6a1 1 0 0 0 0-1.2L8.4 8.533a2 2 0 0 1-.4-1.2V4h8v3.333a2 2 0 0 1-.4 1.2L13.957 11.4a1 1 0 0 0 0 1.2l1.643 2.867a2 2 0 0 1 .4 1.2V20H8Z"
                                 />
                               </svg>
@@ -339,6 +356,9 @@ const Order = () => {
                       <td className="py-4 px-4 text-center font-medium text-gray-100">
                         {order.paymentDetails.method}
                       </td>
+                      <td className="py-4 px-4 font-medium text-center text-gray-100">
+                        {formatDate(order.createdAt)}
+                      </td>
                       <td className="py-4 px-4 flex justify-center space-x-2">
                         {/* <button
                           type="button"
@@ -350,10 +370,16 @@ const Order = () => {
                           onClick={() => {
                             navigate(`/orderdetails/${order._id}`);
                           }}
-                          className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                          className="px-3 py-2 bg-blue-600 cursor-pointer text-white rounded-md hover:bg-blue-700 transition-colors"
                         >
-                          View Details
+                          View
                         </button>
+                                    <button
+              onClick={() => deleteOrder(order._id)}
+              className="px-2 py-2 bg-red-600 cursor-pointer text-white rounded-md hover:bg-red-700 "
+            >
+              Delete
+            </button>
                       </td>
                     </tr>
                   ))

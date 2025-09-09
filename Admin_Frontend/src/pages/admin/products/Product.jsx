@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchProducts } from "../../../store/productSlice";
+import { deleteProduct, fetchProducts } from "../../../store/productSlice";
+import { STATUSES } from "../../../global/statuses";
 
 const Product = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { products } = useSelector((state) => state.product);
-  console.log("Products in Product Page:", products);
+  const [message, setMessage] = useState("");
+  const { products, status } = useSelector((state) => state.product);
   const [selectedItem, setSelectedItem] = useState("all-products");
   const [selectedTime, setSelectedTime] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [date, setDate] = useState("");
+    const [openMenuId, setOpenMenuId] = useState(null); // Track which product's menu is open
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -46,7 +48,7 @@ const Product = () => {
   const filteredProducts =
     selectedItem === "all-products"
       ? currentProducts
-      : currentProducts.filter((product) => product.productStatus === selectedItem);
+      : currentProducts.filter((product) => product.productStatus?.toLowerCase() === selectedItem.toLowerCase());
 
   // Filter products based on selected time
   const timeFilteredProducts = filteredProducts.filter((product) => {
@@ -91,13 +93,26 @@ const Product = () => {
       : true;
   });
 
+    const handleDeleteProduct = (id) => {
+      dispatch(deleteProduct(id));
+      if (status === STATUSES.SUCCESS) {
+        setMessage("Product deleted successfully");
+        setTimeout(() => {
+          setMessage("");
+        }, 2000);
+      }
+    };
+
   return (
     <section className="bg-gray-900 min-h-screen py-12 antialiased text-gray-300">
+                {message && (
+            <p className="text-green-500 text-center mb-8">{message}</p>
+          )}
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-700 pb-4 mb-6">
-            <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">
-              All Products
+            <h2 className="text-3xl font-bold text-white mb-4 sm:mb-0">
+              Products
             </h2>
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative">
@@ -162,6 +177,36 @@ const Product = () => {
                 </svg>
               </div>
             </div>
+          </div>
+          <div className="mb-4 flex">
+            <h2 className="text-2xl font-medium text-gray-200">Products List</h2>
+            {/* <button
+              onClick={() => navigate("/addproduct")}
+              className="ml-auto cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Add Product
+            </button> */}
+            <button
+            onClick={() => navigate("/addproduct")}
+      type="button"
+      className="ml-auto inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 "
+    >
+      <svg
+        className="w-4 h-4 mr-2"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M12 4v16m8-8H4"
+        />
+      </svg>
+      Add New Product
+    </button>
           </div>
 
           <div className="overflow-x-auto">
@@ -274,14 +319,114 @@ const Product = () => {
                         >
                           Cancel Order
                         </button> */}
-                        <button
+                        {/* <button
                           onClick={() => {
                             navigate(`/productdetails/${product._id}`);
                           }}
                           className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                         >
                           View Details
-                        </button>
+                        </button> */}
+                                                <div className="flex justify-center">
+                          <button
+                            onClick={() => setOpenMenuId(openMenuId === product._id ? null : product._id)}
+                            className="cursor-pointer p-2 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full"
+                          >
+                            {/* make below svg icon horizontal three dots */}
+                            <svg
+                              className="w-6 h-6"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="3"
+                                d="M6 12h.01M12 12h.01M18 12h.01"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        {openMenuId === product._id && (
+                          <div className="absolute right-[60px] mt-14 py-2 w-35 bg-gray-700 rounded-md shadow-lg z-10">
+                            <button
+                              onClick={() => {
+                                // Handle Edit action (e.g., navigate to edit page)
+                                console.log("Edit product:", product._id);
+                                setOpenMenuId(null);
+                              }}
+                              className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-white hover:bg-gray-600 rounded-t-md focus:outline-none"
+                            >
+                              <svg
+                                className="w-5 h-5 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                />
+                              </svg>
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => {
+                                // Handle View action (e.g., navigate to view page)
+                                console.log("View product:", product._id);
+                                setOpenMenuId(null);
+                              }}
+                              className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-white hover:bg-gray-600 focus:outline-none"
+                            >
+                              <svg
+                                className="w-5 h-5 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
+                              View
+                            </button>
+                            <button
+                              onClick={() => handleDeleteProduct(product._id)}
+                              className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-red-500 hover:bg-gray-600 rounded-b-md focus:outline-none"
+                            >
+                              <svg
+                                className="w-5 h-5 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
+                              </svg>
+                              Delete
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))

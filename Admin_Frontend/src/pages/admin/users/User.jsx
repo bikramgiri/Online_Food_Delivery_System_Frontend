@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { fetchUsers } from "../../../store/UserSlice";
+import { deleteUser, fetchUsers } from "../../../store/UserSlice";
+import { STATUSES } from "../../../global/statuses";
 
 const Users = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { users } = useSelector((state) => state.user);
-  console.log("Users:", users);
+  const { users, status } = useSelector((state) => state.user);
   const [selectedItem, setSelectedItem] = useState("all-users");
   const [selectedTime, setSelectedTime] = useState("all");
+  const [message, setMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [date, setDate] = useState("");
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  const handleDeleteUser = (id) => {
+    dispatch(deleteUser(id));
+    if (status === STATUSES.SUCCESS) {
+      setMessage("User deleted successfully");
+      setTimeout(() => {
+        setMessage("");
+      }, 2000);
+    }
+  };
 
   // Function to format date: Thusrsday Aug 25, 2025
   const formatDate = (dateString) => {
@@ -92,6 +101,9 @@ const Users = () => {
 
   return (
     <section className="bg-gray-900 min-h-screen py-12 antialiased text-gray-300">
+          {message && (
+            <p className="text-green-500 text-center mb-8">{message}</p>
+          )}
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-700 pb-4 mb-6">
@@ -185,36 +197,34 @@ const Users = () => {
                       key={user._id}
                       className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition-colors"
                     >
-                      <td className="py-4 px-4 text-center font-medium text-gray-100">
+                      <td className="py-3 px-4 text-center font-medium text-gray-100">
                         {user._id}
                       </td>
-                      <td className="py-4 px-4 font-medium text-center text-gray-100">
+                      <td className="py-3 px-4 font-medium text-center text-gray-100">
                         {user.username}
                       </td>
-                      <td className="py-4 px-4 font-medium text-center text-gray-100">
+                      <td className="py-3 px-4 font-medium text-center text-gray-100">
                         {user.email}
                       </td>
-                      <td className="py-4 px-4 text-center font-medium text-gray-100">
+                      <td className="py-3 px-4 text-center font-medium text-gray-100">
                         {user.phoneNumber}
                       </td>
-                      <td className="py-4 px-4 text-center font-medium text-gray-100">
+                      <td className="py-3 px-4 text-center font-medium text-gray-100">
                         {formatDate(user.createdAt)}
                       </td>
-                      <td className="py-4 px-4 flex justify-center space-x-2">
+                      <td className="py-3 px-4 flex justify-center space-x-2">
                         {/* <button
                           type="button"
                           className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
                         >
                           Cancel Order
                         </button> */}
-                        <button
-                          onClick={() => {
-                            navigate(`/userdetails/${user._id}`);
-                          }}
-                          className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                        >
-                          View Details
-                        </button>
+            <button
+              onClick={() => handleDeleteUser(user._id)}
+              className="px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 transition duration-200 w-full md:w-auto"
+            >
+              Delete User
+            </button>
                       </td>
                     </tr>
                   ))
