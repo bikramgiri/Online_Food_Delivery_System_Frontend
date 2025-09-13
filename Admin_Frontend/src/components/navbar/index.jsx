@@ -32,7 +32,7 @@ const Navbar = (props) => {
       <div className="ml-[6px]">
         <div className="h-6 w-[224px] pt-1">
           <a
-            className="text-sm font-normal text-navy-700 hover:underline dark:text-white dark:hover:text-white"
+            className="text-sm font-normal text-navy-700 dark:text-white dark:hover:text-white"
             href=" "
           >
             Pages
@@ -42,7 +42,7 @@ const Navbar = (props) => {
             </span>
           </a>
           <Link
-            className="text-sm font-normal capitalize text-navy-700 hover:underline dark:text-white dark:hover:text-white"
+            className="text-sm font-normal capitalize text-navy-700 dark:text-white dark:hover:text-white"
             to="#"
           >
             {brandText}
@@ -190,7 +190,7 @@ const Navbar = (props) => {
         <Dropdown
           button={
             <img
-              className="h-10 w-10 rounded-full"
+              className="cursor-pointer h-10 w-10 rounded-full"
               src={avatar}
               alt="Elon Musk"
             />
@@ -221,7 +221,7 @@ const Navbar = (props) => {
                 </a>
                 <button
                   onClick={handleLogOut}
-                  className="mt-3 text-sm font-medium text-red-500 hover:text-red-500 transition duration-150 ease-out hover:ease-in"
+                  className="cursor-pointer mt-3 text-sm font-medium text-red-500 hover:text-red-500 transition duration-150 ease-out hover:ease-in"
                 >
                   Log Out
                 </button>

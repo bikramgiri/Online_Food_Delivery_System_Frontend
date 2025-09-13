@@ -346,10 +346,10 @@ const handleOrderStatus =  () => {
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
                     {/* <option value={filteredOrder?.orderStatus}>{filteredOrder?.orderStatus}</option> */}
-                    <option value="Pending">Pending</option>
-                    <option value="Preparing">Preparing</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="In Transit">In Transit</option>
+                    <option value="pending">Pending</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="in transit">In Transit</option>
                   </select>
                 </div>
                 <div className="flex justify-end space-x-4">

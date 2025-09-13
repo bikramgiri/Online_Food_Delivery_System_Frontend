@@ -64,26 +64,6 @@ export function fetchOrders() {
   };
 }
 
-export function deleteOrders(orderId) {
-  return async function deleteOrderThunk(dispatch) {
-    dispatch(setStatus(STATUSES.LOADING));
-    try {
-      const response = await APIAuthenticated.delete(
-        `/admin/orders/${orderId}`
-      );
-      dispatch(deleteOrderById({ orderId }));
-      dispatch(setStatus(STATUSES.SUCCESS));
-      // make: If delete is triggred from single order page then redirect to orders page
-      if (response.status === 200 && window.location.pathname === `/admin/orders/${orderId}`) {
-        window.location.href = "/admin/orders";
-      }
-    } catch (error) {
-      console.log("Failed to fetch order:", error.response?.data);
-      dispatch(setStatus(STATUSES.ERROR));
-    }
-  };
-}
-
 export function updateOrdersStatus(orderId, orderStatus) {
   return async function updateOrderStatusThunk(dispatch) {
     dispatch(setStatus(STATUSES.LOADING));
@@ -101,11 +81,8 @@ export function updateOrdersStatus(orderId, orderStatus) {
           orderStatus: response.data.data.orderStatus,
         })
       );
-      dispatch(fetchOrders()); // Refetch to ensure state is updated
       dispatch(setStatus(STATUSES.SUCCESS));
-      // if (response.status === 200) {
-      //   window.location.href = `/orderdetails/${orderId}`; // Redirect after update
-      // }
+      dispatch(fetchOrders()); // Refetch to ensure state is updated
     } catch (error) {
       console.log("Failed to update order status:", error.response?.data);
       dispatch(setStatus(STATUSES.ERROR));
@@ -130,13 +107,31 @@ export function updatePaymentStatus(orderId, paymentStatus) {
           data: response.data.data
         })
       );
-      dispatch(fetchOrders()); // Refetch to ensure state is updated
       dispatch(setStatus(STATUSES.SUCCESS));
-      // if (response.status === 200) {
-      //   window.location.href = `/orderdetails/${orderId}`; // Redirect after update
-      // }
+      dispatch(fetchOrders()); // Refetch to ensure state is updated
     } catch (error) {
       console.log("Failed to update payment status:", error.response?.data);
+      dispatch(setStatus(STATUSES.ERROR));
+    }
+  };
+}
+
+export function deleteOrders(orderId) {
+  return async function deleteOrderThunk(dispatch) {
+    dispatch(setStatus(STATUSES.LOADING));
+    try {
+      const response = await APIAuthenticated.delete(
+        `/admin/orders/${orderId}`
+      );
+      dispatch(deleteOrderById({ orderId }));
+      dispatch(setStatus(STATUSES.SUCCESS));
+      // make: If delete is triggred from single order page then redirect to orders page
+      if (response.status === 200 && window.location.pathname === `/admin/orders/${orderId}`) {
+        window.location.href = "/admin/orders";
+      }
+      dispatch(fetchOrders()); // Refetch to ensure state is updated
+    } catch (error) {
+      console.log("Failed to fetch order:", error.response?.data);
       dispatch(setStatus(STATUSES.ERROR));
     }
   };

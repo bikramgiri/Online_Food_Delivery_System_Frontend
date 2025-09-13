@@ -13,7 +13,7 @@ const Product = () => {
   const [selectedTime, setSelectedTime] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [date, setDate] = useState("");
-    const [openMenuId, setOpenMenuId] = useState(null); // Track which product's menu is open
+    // const [openMenuId, setOpenMenuId] = useState(null); // Track which product's menu is open
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -180,16 +180,10 @@ const Product = () => {
           </div>
           <div className="mb-4 flex">
             <h2 className="text-2xl font-medium text-gray-200">Products List</h2>
-            {/* <button
-              onClick={() => navigate("/addproduct")}
-              className="ml-auto cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              Add Product
-            </button> */}
             <button
-            onClick={() => navigate("/addproduct")}
+            onClick={() => navigate("/admin/products/addproduct")}
       type="button"
-      className="ml-auto inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 "
+      className="cursor-pointer ml-auto inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 "
     >
       <svg
         className="w-4 h-4 mr-2"
@@ -327,12 +321,11 @@ const Product = () => {
                         >
                           View Details
                         </button> */}
-                                                <div className="flex justify-center">
+                        {/* <div className="flex justify-center">
                           <button
                             onClick={() => setOpenMenuId(openMenuId === product._id ? null : product._id)}
                             className="cursor-pointer p-2 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full"
                           >
-                            {/* make below svg icon horizontal three dots */}
                             <svg
                               className="w-6 h-6"
                               fill="none"
@@ -348,8 +341,8 @@ const Product = () => {
                               />
                             </svg>
                           </button>
-                        </div>
-                        {openMenuId === product._id && (
+                        </div> */}
+                        {/* {openMenuId === product._id && (
                           <div className="absolute right-[60px] mt-14 py-2 w-35 bg-gray-700 rounded-md shadow-lg z-10">
                             <button
                               onClick={() => {
@@ -377,8 +370,7 @@ const Product = () => {
                             </button>
                             <button
                               onClick={() => {
-                                // Handle View action (e.g., navigate to view page)
-                                console.log("View product:", product._id);
+                                navigate(`/admin/products/${product._id}`);
                                 setOpenMenuId(null);
                               }}
                               className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-white hover:bg-gray-600 focus:outline-none"
@@ -426,7 +418,21 @@ const Product = () => {
                               Delete
                             </button>
                           </div>
-                        )}
+                        )} */}
+                        <button
+                          onClick={() => {
+                            navigate(`/admin/products/${product._id}`);
+                          }}
+                          className="px-3 py-2 bg-blue-600 cursor-pointer text-white rounded-md hover:bg-blue-700 transition-colors"
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(product._id)}
+                          className="px-2 py-2 bg-red-600 cursor-pointer text-white rounded-md hover:bg-red-700 "
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))

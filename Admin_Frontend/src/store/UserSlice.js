@@ -52,6 +52,7 @@ export function deleteUser(userId) {
       );
       dispatch(deleteUserById({ userId }));
       dispatch(setStatus(STATUSES.SUCCESS));
+      dispatch(fetchUsers()); // Refetch to ensure state is updated
     } catch (error) {
       console.log("Failed to fetch user:", error.response?.data);
       dispatch(setStatus(STATUSES.ERROR));

@@ -76,7 +76,7 @@ const Order = () => {
   const searchedOrders = timeFilteredOrders.filter(
     (order) =>
       order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.paymentDetails.method
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
@@ -98,21 +98,19 @@ const Order = () => {
       : true;
   });
 
-    const deleteOrder = (id) => {
-      dispatch(deleteOrders(id));
-      if (status === STATUSES.SUCCESS) {
-        setMessage("Order deleted successfully");
-        setTimeout(() => {
-          setMessage("");
-        }, 2000);
-      }
-    };
+  const deleteOrder = (id) => {
+    dispatch(deleteOrders(id));
+    if (status === STATUSES.SUCCESS) {
+      setMessage("Order deleted successfully");
+      setTimeout(() => {
+        setMessage("");
+      }, 2000);
+    }
+  };
 
   return (
     <section className="bg-gray-900 min-h-screen py-12 antialiased text-gray-300">
-    {message && (
-      <p className="text-green-500 text-center mb-8">{message}</p>
-    )}
+      {message && <p className="text-green-500 text-center mb-8">{message}</p>}
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-700 pb-4 mb-6">
@@ -129,7 +127,7 @@ const Order = () => {
                   <option value="all-orders">All Orders</option>
                   <option value="pending">Pending</option>
                   <option value="pre-order">Pre-order</option>
-                  <option value="transit">In Transit</option>
+                  <option value="in transit">In Transit</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
@@ -193,6 +191,7 @@ const Order = () => {
                 <tr className="bg-gray-700 text-gray-200 uppercase text-xs font-semibold">
                   <th className="py-4 px-4 text-center">Order ID</th>
                   <th className="py-4 px-4 text-center">User Name</th>
+                  {/* <th className="py-4 px-4 text-center">Product</th> */}
                   <th className="py-4 px-4 text-center">Total Amount</th>
                   <th className="py-4 px-4 text-center">Order Status</th>
                   <th className="py-4 px-4 text-center">Payment Method</th>
@@ -213,11 +212,14 @@ const Order = () => {
                       <td className="py-4 px-4 font-medium text-center text-gray-100">
                         {order.user.username}
                       </td>
+                     {/* <td className="py-4 px-4 font-medium text-center text-gray-100">
+                        {order.productName}
+                      </td> */}
                       <td className="py-4 px-4 font-medium text-center text-gray-100">
                         NPR {order.totalAmount}
                       </td>
                       <td className="py-4 px-4 text-center">
-                        {order.orderStatus === "Pending" ? (
+                        {order.orderStatus === "pending" ? (
                           <div>
                             <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
                               <svg
@@ -240,7 +242,7 @@ const Order = () => {
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "Delivered" ? (
+                        ) : order.orderStatus === "delivered" ? (
                           <div>
                             <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
                               <svg
@@ -263,7 +265,7 @@ const Order = () => {
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "Cancelled" ? (
+                        ) : order.orderStatus === "cancelled" ? (
                           <div>
                             <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">
                               <svg
@@ -286,7 +288,7 @@ const Order = () => {
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "In Transit" ? (
+                        ) : order.orderStatus === "in transit" ? (
                           <div>
                             <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
                               <svg
@@ -309,7 +311,7 @@ const Order = () => {
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "Pre Order" ? (
+                        ) : order.orderStatus === "pre-order" ? (
                           <div>
                             <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
                               <svg
@@ -368,18 +370,18 @@ const Order = () => {
                         </button> */}
                         <button
                           onClick={() => {
-                            navigate(`/orderdetails/${order._id}`);
+                            navigate(`/admin/orders/${order._id}`);
                           }}
                           className="px-3 py-2 bg-blue-600 cursor-pointer text-white rounded-md hover:bg-blue-700 transition-colors"
                         >
                           View
                         </button>
-                                    <button
-              onClick={() => deleteOrder(order._id)}
-              className="px-2 py-2 bg-red-600 cursor-pointer text-white rounded-md hover:bg-red-700 "
-            >
-              Delete
-            </button>
+                        <button
+                          onClick={() => deleteOrder(order._id)}
+                          className="px-2 py-2 bg-red-600 cursor-pointer text-white rounded-md hover:bg-red-700 "
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))
