@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { API } from "../http";
+import { createSlice } from "@reduxjs/toolkit";
+import { API, APIAuthenticated } from "../http";
 
 const API_URL = import.meta.env.API_URL || 'http://localhost:3000';
 const STATUSES = Object.freeze({
@@ -26,19 +26,19 @@ const productSlice = createSlice({
           state.selectedProduct = action.payload;
       },
     },
-    extraReducers : (builder) => {
-        builder
-        .addCase(fetchProducts.pending, (state)=>{
-            state.status = STATUSES.LOADING
-        })
-        .addCase(fetchProducts.fulfilled,(state, action)=>{
-            state.data = action.payload;
-            state.status = STATUSES.SUCCESS;
-        })
-        .addCase(fetchProducts.rejected, (state)=>{
-            state.status = STATUSES.ERROR;
-        })
-    },
+    // extraReducers : (builder) => {
+    //     builder
+    //     .addCase(fetchProducts.pending, (state)=>{
+    //         state.status = STATUSES.LOADING
+    //     })
+    //     .addCase(fetchProducts.fulfilled,(state, action)=>{
+    //         state.data = action.payload;
+    //         state.status = STATUSES.SUCCESS;
+    //     })
+    //     .addCase(fetchProducts.rejected, (state)=>{
+    //         state.status = STATUSES.ERROR;
+    //     })
+    // },
 });
 
 export const { setProducts, setStatus, setSelectedProduct } = productSlice.actions
@@ -58,32 +58,32 @@ export default productSlice.reducer
 
 // **OR
 
-export const fetchProducts = createAsyncThunk("products/fetch", async() => {
-    try {
-        const response = await API.get('/admin/products')
-        const data = response.data.data
-        return data
-    } catch (error) {
-      console.log("Failed to fetch products:", error);
-    }
-});
+// export const fetchProducts = createAsyncThunk("products/fetch", async() => {
+//     try {
+//         const response = await API.get('/admin/products')
+//         const data = response.data.data
+//         return data
+//     } catch (error) {
+//       console.log("Failed to fetch products:", error);
+//     }
+// });
 
 
  // *Fetch products methods 2:
 
-// export function fetchProducts(){
-//       return async function fetchProductThunk(dispatch) {
-//         dispatch(setStatus(STATUSES.LOADING));
-//         try {
-//             const response = await axios.get(`${API_URL}/admin/products`);
-//             dispatch(setProducts(response.data.data));
-//             dispatch(setStatus(STATUSES.SUCCESS));
-//         } catch (error) {
-//             console.log("Failed to fetch products:", error);
-//             dispatch(setStatus(STATUSES.ERROR));
-//         }
-//       }
-// }
+export function fetchProducts(){
+      return async function fetchProductThunk(dispatch) {
+        dispatch(setStatus(STATUSES.LOADING));
+        try {
+            const response = await APIAuthenticated.get(`${API_URL}/admin/products`);
+            dispatch(setProducts(response.data.data.reverse()));
+            dispatch(setStatus(STATUSES.SUCCESS));
+        } catch (error) {
+            console.log("Failed to fetch products:", error);
+            dispatch(setStatus(STATUSES.ERROR));
+        }
+      }
+}
 
 
 // Fetch Single product
@@ -98,7 +98,7 @@ export function fetchSingleProduct(productId){
             console.log("Failed to fetch product:", error);
             dispatch(setStatus(STATUSES.ERROR));
         }
-      }
+    }
 }
 
 

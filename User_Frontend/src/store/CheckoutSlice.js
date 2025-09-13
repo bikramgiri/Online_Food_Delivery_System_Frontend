@@ -32,6 +32,7 @@ export function createOrder(data) {
       const response = await APIAuthenticated.post("/users/orders", data);
       dispatch(setOrder(response.data.data));
       dispatch(setStatus(STATUSES.SUCCESS));
+      dispatch(fetchOrder());
     } catch (error) {
       console.log("Failed to create order:", error.response?.data);
       dispatch(setStatus(STATUSES.ERROR));

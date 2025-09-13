@@ -24,9 +24,6 @@ function App() {
   return (
     <>
     <Provider store={store}>
-    {/* <Navbar />
-    <RouterProvider router = {router} />
-    <Footer /> */}
     <BrowserRouter>
       <Navbar />
         <Routes>

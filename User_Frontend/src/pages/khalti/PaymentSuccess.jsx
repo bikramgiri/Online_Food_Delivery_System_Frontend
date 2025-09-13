@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { APIAuthenticated } from '../../http';
 import Loader from '../../components/loader/Loader';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { emptyCart } from '../../store/cartSlice';
 
 const PaymentSuccess = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch();
+  const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const pidx = queryParams.get("pidx");
   const [loading, setLoading] = useState(true);
 
   const verifyPidx = async () => {
+    if (!pidx) {
+      console.error("No pidx found in query parameters");
+      setLoading(false);
+      alert("Payment verification failed. No payment ID found.");
+      return;
+    }
+
     try {
       const response = await APIAuthenticated.post("/users/verifypidx", {pidx});
       console.log("Payment Verification Response:", response.data);

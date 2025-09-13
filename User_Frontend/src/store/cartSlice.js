@@ -13,7 +13,15 @@ const cartSlice = createSlice({
     setItems: (state, action) => {
       state.items = action.payload;
     },
+// setItems: (state, action) => {
+//       state.items = action.payload.map(item => ({
+//         _id: item._id || item.product._id, // Ensure each item has a unique _id
+//         product: item.product || {},
+//         quantity: item.quantity || 1,
+//       }));
+//     },
     deleteItem: (state, action) => {
+      console.log("Delete Item Action Payload:", action.payload);
       const index = state.items.findIndex((item) => item.product._id === action.payload.productId);
       if (index !== -1) {
         state.items.splice(index, 1);
@@ -49,8 +57,10 @@ export function addToCart(productId) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.post(`users/cart/${productId}`);
+      console.log("Add to Cart Response:", response.data); // Debug response
       dispatch(setItems(response.data.data));
       dispatch(setStatus(STATUSES.SUCCESS));
+      dispatch(fetchCartItems())
     } catch (error) {
       console.log("Failed to add item to cart:", error);
       dispatch(setStatus(STATUSES.ERROR));
@@ -63,6 +73,7 @@ export function fetchCartItems() {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get(`users/cart`);
+      console.log("Cart Items Response:", response.data);
       dispatch(setItems(response.data.data));
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {
@@ -79,6 +90,7 @@ export function updateCartItem({ productId, quantity }) {
       await APIAuthenticated.patch(`users/cart/${productId}`, { quantity });
       dispatch(updateItems({ productId, quantity }));
       dispatch(setStatus(STATUSES.SUCCESS));
+      dispatch(fetchCartItems()); // Refresh cart items after update
     } catch (error) {
       console.log("Failed to update cart item:", error);
       dispatch(setStatus(STATUSES.ERROR));
@@ -91,8 +103,9 @@ export function deleteCartItem(productId) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       await APIAuthenticated.delete(`users/cart/${productId}`);
-      dispatch(deleteItem(productId));
+      dispatch(deleteItem({productId}));
       dispatch(setStatus(STATUSES.SUCCESS));
+      dispatch(fetchCartItems());
     } catch (error) {
       console.log("Failed to update cart item:", error);
       dispatch(setStatus(STATUSES.ERROR));

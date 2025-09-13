@@ -11,6 +11,7 @@ import Loader from "../../components/loader/Loader";
 const Cart = () => {
   const navigate = useNavigate();
   const { items: products, status } = useSelector((state) => state.cart);
+  console.log("Cart Products:", products);
   const dispatch = useDispatch();
 
   const handleDeleteItem = (productId) => {
@@ -20,9 +21,7 @@ const Cart = () => {
   const handleFavoriteItem = (productId) => {
     dispatch(addToFavorites(productId));
   };
- 
-  // make user can not increase quantity more than stock quantity
-  
+
   const handleQuantityChange = (productId, newQuantity) => {
     const quantity = Math.max(1, Number(newQuantity) || 1);
     const product = products.find((item) => item.product._id === productId);
@@ -32,10 +31,6 @@ const Cart = () => {
     dispatch(updateCartItem({ productId, quantity }));
   };
 
-  // const totalItemsInCart = products.reduce((total, item) => total + item.quantity, 0);
-  // const totalPriceOfCart = products.reduce((price, item) => price + item.product.productPrice * item.quantity, 0);
-
-  // Safely handle products being undefined or not an array
   const totalItemsInCart = Array.isArray(products)
     ? products.reduce((total, item) => total + item.quantity, 0)
     : 0;
@@ -62,15 +57,13 @@ const Cart = () => {
             <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
               <div className="space-y-6">
                 {status === "loading" ? (
-                <Loader className="dark:text-white" status="Loading..." />
-                  // <p className="dark:text-white">Loading...</p>
+                  <Loader className="dark:text-white" status="Loading..." />
                 ) : !Array.isArray(products) || products.length === 0 ? (
                   <p className="text-gray-500 dark:text-gray-400">
                     Your cart is empty.
                   </p>
                 ) : (
                   products.map((product) => (
-                    // <Link to={`/productdetails/${product.product._id}`} key={product._id}>
                     <div
                       key={product._id}
                       className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6 mb-2"
@@ -149,7 +142,7 @@ const Cart = () => {
                               id="increment-button"
                               disabled={product.quantity === product.product.productStockQty}
                               data-input-counter-increment="counter-input"
-                              className="disabled:cursor-not-allowed  cursor-pointer inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                              className="disabled:cursor-not-allowed cursor-pointer inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
                               <svg
                                 className="h-2.5 w-2.5 text-gray-900 dark:text-white"
@@ -260,15 +253,6 @@ const Cart = () => {
                       </dd>
                     </dl>
 
-                    {/* <dl className="flex items-center justify-between gap-4">
-                      <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                        Original price
-                      </dt>
-                      <dd className="text-base font-medium text-gray-900 dark:text-white">
-                        $7,592.00
-                      </dd>
-                    </dl> */}
-
                     <dl className="flex items-center justify-between gap-4">
                       <dt className="font-medium dark:text-white">
                         Shipping Amount
@@ -301,40 +285,10 @@ const Cart = () => {
                 <button
                   onClick={() => navigate("/checkout")}
                   type="button"
-                  // make: text"check out "at center of button
                   className="flex items-center justify-center w-50 rounded-lg px-5 py-2.5 text-sm ml-10 mt-8 font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
                 >
                   Check Out
                 </button>
-
-                <div className="flex items-center justify-center gap-2">
-                  {/* <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    {" "}
-                    or{" "}
-                  </span> */}
-                  {/* <a
-                    href="#"
-                    title=""
-                    className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-blue-500"
-                  >
-                    Continue Shopping
-                    <svg
-                      className="h-5 w-5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 12H5m14 0-4 4m4-4-4-4"
-                      />
-                    </svg>
-                  </a> */}
-                </div>
               </div>
 
               <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
@@ -344,8 +298,7 @@ const Cart = () => {
                       htmlFor="voucher"
                       className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      {" "}
-                      Do you have a voucher or gift card?{" "}
+                      Do you have a voucher or gift card?
                     </label>
                     <input
                       type="text"
