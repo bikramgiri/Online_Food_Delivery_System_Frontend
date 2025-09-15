@@ -11,7 +11,6 @@ import Loader from "../../components/loader/Loader";
 const Cart = () => {
   const navigate = useNavigate();
   const { items: products, status } = useSelector((state) => state.cart);
-  console.log("Cart Products:", products);
   const dispatch = useDispatch();
 
   const handleDeleteItem = (productId) => {

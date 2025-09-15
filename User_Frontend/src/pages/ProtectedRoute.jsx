@@ -5,7 +5,6 @@ import { fetchUserProfile } from '../store/authSlice';
 const ProtectedRouteForAdmin = ({ children }) => {
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.auth);
-  console.log("ProtectedRouteForAdmin - Auth Data:", data); // Debug line
 
    useEffect(()=>{
     dispatch(fetchUserProfile())

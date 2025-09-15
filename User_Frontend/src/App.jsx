@@ -18,6 +18,7 @@ import MyOrders from './pages/myOrders/MyOrders'
 import OrderDetails from './pages/orderDetails/OrderDetails'
 import Dashboard from './pages/admin/dashboard/Dashboard'
 import { ProtectedRouteForAdmin, ProtectedRouteForCustomer } from './pages/ProtectedRoute'
+import MyOrdersQr from './pages/myOrdersQr/MyOrdersQr'
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
           <Route path="/orderdetails/:id" element={<OrderDetails />} />
+          <Route path="/myorderqr" element={<MyOrdersQr />} />
           <Route path="/admin" element={<ProtectedRouteForAdmin><Dashboard /></ProtectedRouteForAdmin>} />
         </Routes>
       <Footer />

@@ -73,7 +73,6 @@ export function fetchCartItems() {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get(`users/cart`);
-      console.log("Cart Items Response:", response.data);
       dispatch(setItems(response.data.data));
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {

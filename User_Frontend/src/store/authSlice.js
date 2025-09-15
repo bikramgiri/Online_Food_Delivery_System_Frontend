@@ -95,7 +95,7 @@ export function loginUser(data) {
       dispatch(setToken(response.data.token));
       dispatch(setStatus(STATUSES.SUCCESS));
       // Save token to cookies
-      document.cookie = `token=${response.data.token}; path=/`;
+      // document.cookie = `token=${response.data.token}; path=/`;
       // Save token to localStorage
       localStorage.setItem("token", response.data.token);
     } catch (error) {

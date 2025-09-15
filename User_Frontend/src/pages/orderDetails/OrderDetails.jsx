@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchOrder } from "../../store/CheckOutSlice";
 import { APIAuthenticated } from "../../http";
+import QRCode from "react-qr-code";
 
 const OrderDetails = () => {
   const navigate = useNavigate();
@@ -49,8 +50,16 @@ const OrderDetails = () => {
       }
     }
 
+    const adminOrderPageUrl = `http://localhost:5174/admin/orders/${id}`;
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+              <button
+          onClick={() => navigate("/myorders")}
+          className="cursor-pointer mt-22 items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Back to My Orders
+        </button>
       <div className="mt-30 max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
         {/* Order ID Header */}
         <div className="bg-blue-600 text-white p-6 text-center">
@@ -68,7 +77,7 @@ const OrderDetails = () => {
               filteredOrder.items.map((item) => {
                 return (
                   <div
-                    // key={item.product._id}
+                    key={item.product._id}
                     className="rounded-lg mb-2 border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4"
                   >
                     <div className="space-y-2 md:flex md:items-center md:justify-between md:gap-4 md:space-y-0">
@@ -191,7 +200,7 @@ const OrderDetails = () => {
           </div>
 
           {/* Delivery Note */}
-          <div>
+          {/* <div>
               <dl className="flex items-center justify-between gap-4">
                 <dt className="text-base font-normal text-gray-500 dark:text-white">
                   Delivery Note
@@ -200,7 +209,15 @@ const OrderDetails = () => {
                   Delivery within 24 hours
                 </dd>
               </dl>
+          </div> */}
           </div>
+
+
+                  <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+          <p className="text-xl font-semibold text-gray-900 dark:text-white">
+            QR Code
+          </p>
+              <QRCode className="mx-auto" value={adminOrderPageUrl} />
           </div>
 
           {/* Actions */}
