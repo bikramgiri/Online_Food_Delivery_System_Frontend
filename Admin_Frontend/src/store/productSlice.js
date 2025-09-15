@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STATUSES } from "../global/statuses";
 import { APIAuthenticated } from "../http/index";
+import { fetchOrders } from "./orderSlice";
 
 const ProductSlice = createSlice({
   name: "product",
   initialState: {
     status: STATUSES.SUCCESS,
     selectedProduct: {},
-    products: []
+    products: [],
+    orders: [], // to store orders of a specific product
   },
   reducers: {
     setStatus: (state, action) => {
@@ -44,10 +46,13 @@ const ProductSlice = createSlice({
     addNewProduct: (state, action) => {
       state.products.push(action.payload); 
     },
-  },
-});
+    setOrdersOfProduct: (state, action) => {
+      state.orders = action.payload;
+    },
+},
+})
 
-export const { setStatus, setProducts, setSelectedProduct, deleteProductById, updateProductStatusById, updateProductStockQtyById, addNewProduct } = ProductSlice.actions;
+export const { setStatus, setProducts, setSelectedProduct, deleteProductById, updateProductStatusById, updateProductStockQtyById, addNewProduct, setOrdersOfProduct } = ProductSlice.actions;
 export default ProductSlice.reducer;
 
 export function addProduct(formData) {
@@ -80,7 +85,6 @@ export function fetchProducts() {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get("/admin/products");
-      console.log("API Response:", response.data); // Debug response
       dispatch(setProducts(response.data.data.reverse()));
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {
@@ -95,7 +99,6 @@ export function fetchSingleProduct(productId) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get(`/admin/products/${productId}`);
-      console.log("API Response:", response.data); // Debug response
       dispatch(setSelectedProduct(response.data.data));
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {
@@ -224,5 +227,21 @@ export function updateProductStockQty(productId, productStockQty) {
       dispatch(setStatus(STATUSES.ERROR));
     }
   };
+}
 
+
+export function fetchOrdersOfProduct(productId) {
+  return async function fetchOrdersOfProductThunk(dispatch) {
+    dispatch(setStatus(STATUSES.LOADING));
+    try {
+      const response = await APIAuthenticated.get(`/admin/productOrders/${productId}`);
+      console.log("Orders of this Product:", response.data); // Debug response
+      dispatch(setOrdersOfProduct(response.data.data));
+      dispatch(setStatus(STATUSES.SUCCESS));
+      dispatch(fetchOrders());
+    } catch (error) {
+      console.log("Failed to fetch orders of this product:", error.response?.data);
+      dispatch(setStatus(STATUSES.ERROR));
+    }
+  };
 }

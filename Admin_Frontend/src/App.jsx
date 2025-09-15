@@ -14,6 +14,7 @@ import Navbar from "./components/navbar";
 import Footer from "./components/footer/Footer";
 import AddProduct from "./pages/admin/products/AddProduct";
 import EditProduct from "./pages/admin/products/EditProduct";
+
 const App = () => {
   return (
     <>

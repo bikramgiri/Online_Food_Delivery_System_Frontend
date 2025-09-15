@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STATUSES } from "../global/statuses";
 import { API, APIAuthenticated } from "../http";
+import { fetchUsers } from "./UserSlice";
 
 const API_URL = import.meta.env.API_URL || "http://localhost:3000";
 
@@ -44,9 +45,10 @@ export function loginUser(data) {
       dispatch(setUser(response.data.data));
       dispatch(setToken(response.data.token));
       dispatch(setStatus(STATUSES.SUCCESS));
+      dispatch(fetchUsers());
       if(response.status === 200 && response.data.token){
         // Save token to cookies
-        document.cookie = `token=${response.data.token}; path=/`;
+        // document.cookie = `token=${response.data.token}; path=/`;
         // Save token to localStorage
         localStorage.setItem("token", response.data.token);
         window.location.href = "/admin"; // Redirect to admin dashboard

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { STATUSES } from "../../global/statuses";
@@ -21,13 +21,34 @@ const Login = () => {
 
   const { register, handleSubmit, formState } = useForm();
 
-  // display Login success message if status is success for 3 seconds then navigate to dashboard
-  React.useEffect(() => {
+  // // display Login success message if login status is 201 for 3 seconds then navigate to dashboard
+  // React.useEffect(() => {
+  //   if (loginUser() && status === STATUSES.SUCCESS) {
+  //     setMessage("Login successful");
+  //     setTimeout(() => {
+  //       setMessage("");
+  //       navigate("/");
+  //     }, 2000);
+  //   }
+  // }, [status, navigate]);
+
+  useEffect(() => {
+    // Check login success
     if (status === STATUSES.SUCCESS) {
       setMessage("Login successful");
       setTimeout(() => {
         setMessage("");
         navigate("/");
+      }, 2000);
+    }
+
+    // Check logout success from query parameter
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.get("logout") === "true") {
+      setMessage("Logout successful");
+      setTimeout(() => {
+        setMessage("");
+        navigate("/", { replace: true }); // Replace history to avoid back navigation
       }, 2000);
     }
   }, [status, navigate]);
@@ -38,9 +59,16 @@ const Login = () => {
         <div className="flex justify-center mb-6">
           {/* Logo can be added here */}
         </div>
-        {message && (
+        {/* display both logout and login success message by checking wether message from logout or login triggered */}
+        {/* {message &&  (
           <p className="text-green-500 text-center mb-4">{message}</p>
-        )}
+        )} */}
+            <div
+            className={`mb-4 text-center ${message.includes("Logout") ? " text-red-600" : " text-green-700"}`}
+          >
+            {message}
+          </div>
+          
         <h1 className="text-3xl font-bold text-center text-blue-900 mb-6">Foods Hub</h1>
         <h2 className="text-sm font-bold text-center text-gray-900 mb-6">
           Login in with your email
@@ -104,7 +132,7 @@ const Login = () => {
             </div>
             <Link
               to="/forgotPassword"
-              className="font-medium text-sm text-indigo-600 hover:underline"
+              className="font-medium text-sm text-indigo-600"
             >
               Forgot password?
             </Link>
@@ -112,7 +140,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={status === STATUSES.LOADING}
-            className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="cursor-pointer w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {status === STATUSES.LOADING ? "Logging in..." : "Login"}
           </button>
@@ -134,15 +162,15 @@ const Login = () => {
               </svg>
               <span className="text-sm text-gray-700">Google</span>
             </button> */}
-            <button className="flex ml-4 items-center bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50">
+            <button className="cursor-pointer flex ml-4 items-center bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50">
               <FcGoogle className="w-5 h-5 mr-2" />
               <span className="text-sm text-gray-700"> Sign In with Google</span>
             </button>
-            <button className="flex ml-4 items-center bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50">
+            <button className="cursor-pointer flex ml-4 items-center bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50">
               <FaFacebook className="w-5 h-5 mr-2 text-blue-600" />
               <span className="text-sm text-gray-700"> Sign In with Facebook</span>
             </button>
-            <button className="flex items-center bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50">
+            <button className="cursor-pointer flex items-center bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50">
               <svg
                 className="w-5 h-5 mr-2"
                 viewBox="0 0 24 24"

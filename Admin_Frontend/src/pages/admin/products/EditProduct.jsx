@@ -115,6 +115,7 @@ const EditProduct = () => {
     }
   };
 
+  // make: make
   const handleDiscard = () => {
     setFormData({
       id: id,
@@ -134,6 +135,12 @@ const EditProduct = () => {
 
   return (
     <section className="bg-gray-900 min-h-screen py-12 antialiased text-gray-300">
+      <button
+        onClick={() => navigate(`/admin/products/${id}`)}
+        className="cursor-pointer ml-8 items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        Back to Product Page
+      </button>
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
           <h2 className="text-2xl font-bold text-white mb-6">Edit Product</h2>
@@ -247,7 +254,7 @@ const EditProduct = () => {
             <div className="flex space-x-4">
               <button
                 type="submit"
-                className="w-full inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                className="cursor-pointer w-full inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
@@ -257,7 +264,7 @@ const EditProduct = () => {
               <button
                 type="button"
                 onClick={handleDiscard}
-                className="w-full inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200"
+                className="cursor-pointer w-full inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>

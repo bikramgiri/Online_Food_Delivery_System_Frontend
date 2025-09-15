@@ -20,7 +20,6 @@ const SingleOrder = () => {
 
   // Filter orders to find the one with matching ID
   const filteredOrder = orders.find((order) => order._id === id);
-  console.log("Filtered Order:", filteredOrder); // Debug to check the object
 
 // Set initial statuses when filteredOrder is available
   useEffect(() => {
@@ -31,9 +30,10 @@ const SingleOrder = () => {
   }, [filteredOrder]);
 
   const ShippingPrice = 200;
-  const totalProductAmount = filteredOrder?.totalAmount
-    ? filteredOrder.totalAmount + ShippingPrice
-    : 0;
+  const totalProductsPrice = filteredOrder?.items?.reduce((total, item) => total + (item.product?.productPrice || 0) * item.quantity, 0) || 0;
+  // const totalProductAmount = filteredOrder?.totalAmount
+  //   ? filteredOrder.totalAmount + ShippingPrice
+  //   : 0;
 
 // const handleOrderStatus = async () => {
 //       dispatch(updateOrdersStatus(id, orderStatus));
@@ -190,7 +190,7 @@ const handleOrderStatus =  () => {
                   Total Products Price
                 </dt>
                 <dd className="font-medium text-green-600">
-                  NPR {filteredOrder?.totalAmount.toFixed(2)}
+                  NPR {totalProductsPrice.toFixed(2)}
                 </dd>
               </dl>
 
@@ -199,7 +199,7 @@ const handleOrderStatus =  () => {
                   Total Amount
                 </dt>
                 <dd className="text-xl font-bold text-gray-900 dark:text-white">
-                  NPR {totalProductAmount.toFixed(2)}
+                  NPR {filteredOrder?.totalAmount.toFixed(2)}
                 </dd>
               </dl>
             </div>
@@ -242,7 +242,7 @@ const handleOrderStatus =  () => {
           </div>
 
           {/* Delivery Note */}
-          <div>
+          {/* <div>
             <dl className="flex items-center justify-between gap-4">
               <dt className="text-base font-normal text-gray-500 dark:text-white">
                 Delivery Note
@@ -251,7 +251,7 @@ const handleOrderStatus =  () => {
                 Delivery within 24 hours
               </dd>
             </dl>
-          </div>
+          </div> */}
         </div>
 
         {/* Actions */}
