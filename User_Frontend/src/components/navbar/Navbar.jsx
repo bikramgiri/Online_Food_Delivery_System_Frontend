@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { MdOutlineShoppingCart } from "react-icons/md";
 import { fetchUserProfile, logOut } from "../../store/authSlice";
 import { fetchCartItems } from "../../store/cartSlice";
 
@@ -132,14 +133,15 @@ const Navbar = () => {
 
 
             {/* Cart Icon with Badge */}
+            {/* make: if items.length > 0 click badge else hide unclick */}
             <div className="relative">
-              <div onClick={() => navigate("/cart")}>
+              <div {...(items?.length > 0 ? { onClick: () => navigate("/cart") } : {})}>
                 <button
                   type="button"
-                  className="cursor-pointer text-gray-300 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                  className="cursor-pointer"
                 >
                   <span className="sr-only">Cart</span>
-                  <svg
+                  {/* <svg
                     className="w-6 h-6"
                     fill="none"
                     stroke="currentColor"
@@ -152,7 +154,8 @@ const Navbar = () => {
                       strokeWidth="2"
                       d="M5 7h14l1 10H4L5 7zM5 7l-1-2M4 17a1 1 0 100 2 1 1 0 000-2zm14 0a1 1 0 100 2 1 1 0 000-2z"
                     />
-                  </svg>
+                  </svg> */}
+                  <MdOutlineShoppingCart className="h-7 w-6 dark:text-white" />
                 </button>
               </div>
               <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
