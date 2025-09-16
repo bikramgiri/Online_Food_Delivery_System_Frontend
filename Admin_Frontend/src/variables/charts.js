@@ -148,21 +148,123 @@ export const pieChartOptions = {
 
 export const pieChartData = [63, 25, 12];
 
+// export const barChartDataWeeklyRevenue = [
+//   {
+//     name: "PRODUCT A",
+//     data: [400, 370, 330, 390],
+//     color: "#6AD2Fa",
+//   },
+//   // {
+//   //   name: "PRODUCT B",
+//   //   data: [{totalPendingOrders}, {totalInTransitOrders}, {totalDeliveredOrders}, {totalCancelledOrders}],
+//   //   color: "#4318FF",
+//   // },
+//   // {
+//   //   name: "PRODUCT C",
+//   //   data: [400, 370, 330, 390],
+//   //   color: "#EFF4FB",
+//   // },
+// ];
+
+// export const barChartOptionsWeeklyRevenue = {
+//   chart: {
+//     stacked: true,
+//     toolbar: {
+//       show: false,
+//     },
+//   },
+//   // colors:['#ff3322','#faf']
+//   tooltip: {
+//     style: {
+//       fontSize: "12px",
+//       fontFamily: undefined,
+//       backgroundColor: "#000000"
+//     },
+//     theme: 'dark',
+//     onDatasetHover: {
+//       style: {
+//         fontSize: "12px",
+//         fontFamily: undefined,
+//       },
+//     },
+//   },
+//   xaxis: {
+//     categories: ["Pending", "In Transit", "Delivered", "Cancelled"],
+//     show: false,
+//     labels: {
+//       show: true,
+//       style: {
+//         colors: "#A3AED0",
+//         fontSize: "14px",
+//         fontWeight: "500",
+//       },
+//     },
+//     axisBorder: {
+//       show: false,
+//     },
+//     axisTicks: {
+//       show: false,
+//     },
+//   },
+//   yaxis: {
+//     show: false,
+//     color: "black",
+//     labels: {
+//       show: false,
+//       style: {
+//         colors: "#A3AED0",
+//         fontSize: "14px",
+//         fontWeight: "500",
+//       },
+//     },
+//   },
+
+//   grid: {
+//     borderColor: "rgba(163, 174, 208, 0.3)",
+//     show: true,
+//     yaxis: {
+//       lines: {
+//         show: false,
+//         opacity: 0.5,
+//       },
+//     },
+//     row: {
+//       opacity: 0.5,
+//     },
+//     xaxis: {
+//       lines: {
+//         show: false,
+//       },
+//     },
+//   },
+//   fill: {
+//     type: "solid",
+//     colors: ["#5E37FF", "#6AD2FF", "#E1E9F8"],
+//   },
+//   legend: {
+//     show: false,
+//   },
+//   colors: ["#5E37FF", "#6AD2FF", "#E1E9F8"],
+//   dataLabels: {
+//     enabled: false,
+//   },
+//   plotOptions: {
+//     bar: {
+//       borderRadius: 10,
+//       columnWidth: "20px",
+//     },
+//   },
+// };
+
+
+
+
+
 export const barChartDataWeeklyRevenue = [
   {
-    name: "PRODUCT A",
-    data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
-    color: "#6AD2Fa",
-  },
-  {
-    name: "PRODUCT B",
-    data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
-    color: "#4318FF",
-  },
-  {
-    name: "PRODUCT C",
-    data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
-    color: "#EFF4FB",
+    name: "Orders Status",
+    data: [0, 0, 0, 0], // Initial placeholder values
+    color: "#5E37FF",
   },
 ];
 
@@ -173,14 +275,13 @@ export const barChartOptionsWeeklyRevenue = {
       show: false,
     },
   },
-  // colors:['#ff3322','#faf']
   tooltip: {
     style: {
       fontSize: "12px",
       fontFamily: undefined,
-      backgroundColor: "#000000"
+      backgroundColor: "#000000",
     },
-    theme: 'dark',
+    theme: "dark",
     onDatasetHover: {
       style: {
         fontSize: "12px",
@@ -189,8 +290,7 @@ export const barChartOptionsWeeklyRevenue = {
     },
   },
   xaxis: {
-    categories: ["17", "18", "19", "20", "21", "22", "23", "24", "25"],
-    show: false,
+    categories: ["Pending", "In Transit", "Delivered", "Cancelled"],
     labels: {
       show: true,
       style: {
@@ -207,10 +307,9 @@ export const barChartOptionsWeeklyRevenue = {
     },
   },
   yaxis: {
-    show: false,
-    color: "black",
+    show: true, // Enable y-axis to show order counts
     labels: {
-      show: false,
+      show: true,
       style: {
         colors: "#A3AED0",
         fontSize: "14px",
@@ -218,13 +317,12 @@ export const barChartOptionsWeeklyRevenue = {
       },
     },
   },
-
   grid: {
     borderColor: "rgba(163, 174, 208, 0.3)",
     show: true,
     yaxis: {
       lines: {
-        show: false,
+        show: true,
         opacity: 0.5,
       },
     },
@@ -244,14 +342,20 @@ export const barChartOptionsWeeklyRevenue = {
   legend: {
     show: false,
   },
-  colors: ["#5E37FF", "#6AD2FF", "#E1E9F8"],
+  colors: ["#5E37FF"], // Single color for the single dataset
   dataLabels: {
-    enabled: false,
+    enabled: true, // Show data labels on top of bars
+    style: {
+      colors: ["#FFFFFF"], // White text for contrast
+      fontSize: "12px",
+      fontWeight: "bold",
+    },
   },
   plotOptions: {
     bar: {
-      borderRadius: 10,
-      columnWidth: "20px",
+      borderRadius: 8,
+      columnWidth: "30px",
+      distributed: false, // Ensure bars are stacked if multiple datasets are added later
     },
   },
 };
