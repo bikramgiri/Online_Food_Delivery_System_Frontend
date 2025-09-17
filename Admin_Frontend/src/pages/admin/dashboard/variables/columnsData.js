@@ -23,16 +23,16 @@ export const columnsDataCheck = [
     accessor: "name",
   },
   {
-    Header: "PROGRESS",
-    accessor: "progress",
+    Header: "Phone Number",
+    accessor: "phoneNumber",
   },
   {
-    Header: "QUANTITY",
-    accessor: "quantity",
+    Header: "Total Orders",
+    accessor: "orders",
   },
   {
-    Header: "DATE",
-    accessor: "date",
+    Header: "Total Paid Amount",
+    accessor: "paidAmount",
   },
 ];
 
@@ -61,15 +61,15 @@ export const columnsDataComplex = [
     accessor: "name",
   },
   {
-    Header: "STATUS",
-    accessor: "status",
+    Header: "Phone Number",
+    accessor: "phoneNumber",
   },
   {
-    Header: "DATE",
-    accessor: "date",
+    Header: "Total Orders",
+    accessor: "orders",
   },
   {
-    Header: "PROGRESS",
-    accessor: "progress",
+    Header: "Total Paid Amount",
+    accessor: "paidAmount",
   },
 ];

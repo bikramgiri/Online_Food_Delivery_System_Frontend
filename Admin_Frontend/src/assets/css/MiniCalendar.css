@@ -57,14 +57,14 @@ abbr[title] {
 	color: #1b2559;
 }
 .react-calendar__month-view__weekdays {
-	background-color: #f4f7fe;
+	background-color: #5e7abb; 
 	border-radius: 10px;
 	margin-bottom: 6px;
 }
 .react-calendar__tile--now,
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
-	background-color: #f4f7fe;
+	background-color: #3d70e5;
 	border-radius: 10px;
 }
 .react-calendar__month-view__days__day--neighboringMonth {

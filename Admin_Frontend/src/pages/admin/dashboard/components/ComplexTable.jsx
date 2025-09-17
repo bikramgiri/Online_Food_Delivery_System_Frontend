@@ -23,10 +23,10 @@ export default function ComplexTable(props) {
     columnHelper.accessor("name", {
       id: "name",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-gray-700">NAME</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-navy-700 dark:text-gray-700">
           {info.getValue()}
         </p>
       ),
@@ -34,7 +34,7 @@ export default function ComplexTable(props) {
     columnHelper.accessor("status", {
       id: "status",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
+        <p className="text-sm font-bold text-gray-600 dark:text-gray-700">
           STATUS
         </p>
       ),
@@ -47,7 +47,7 @@ export default function ComplexTable(props) {
           ) : info.getValue() === "Error" ? (
             <MdOutlineError className="text-amber-500 me-1 dark:text-amber-300" />
           ) : null}
-          <p className="text-sm font-bold text-navy-700 dark:text-white">
+          <p className="text-sm font-bold text-navy-700 dark:text-gray-700">
             {info.getValue()}
           </p>
         </div>
@@ -56,10 +56,10 @@ export default function ComplexTable(props) {
     columnHelper.accessor("date", {
       id: "date",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-gray-700">DATE</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-navy-700 dark:text-gray-700">
           {info.getValue()}
         </p>
       ),
@@ -67,7 +67,7 @@ export default function ComplexTable(props) {
     columnHelper.accessor("progress", {
       id: "progress",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
+        <p className="text-sm font-bold text-gray-600 dark:text-gray-700">
           PROGRESS
         </p>
       ),
@@ -93,7 +93,7 @@ export default function ComplexTable(props) {
   return (
     <Card extra={"w-full h-full px-6 pb-6 sm:overflow-x-auto"}>
       <div className="relative flex items-center justify-between pt-4">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
+        <div className="text-xl font-bold text-navy-700 dark:text-gray-700">
           Complex Table
         </div>
         <CardMenu />
@@ -139,7 +139,7 @@ export default function ComplexTable(props) {
                       return (
                         <td
                           key={cell.id}
-                          className="min-w-[150px] border-white/0 py-3  pr-4"
+                          className="min-w-[150px] border-gray-700/0 py-3  pr-4"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
