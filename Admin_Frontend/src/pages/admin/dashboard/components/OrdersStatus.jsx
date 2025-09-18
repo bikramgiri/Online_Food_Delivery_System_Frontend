@@ -52,7 +52,7 @@ const OrdersStatus = () => {
   const totalInTransitOrders = allInTransitOrders?.length || 0;
 
     const allInPreparingOrders = datas.allOrders?.filter(
-    (order) => order.orderStatus === "in preparing"
+    (order) => order.orderStatus === "preparing"
   );
   const totalInPreparingOrders = allInPreparingOrders?.length || 0;
 

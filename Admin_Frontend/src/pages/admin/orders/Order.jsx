@@ -126,7 +126,7 @@ const Order = () => {
                 >
                   <option value="all-orders">All Orders</option>
                   <option value="pending">Pending</option>
-                  <option value="pre-order">Pre-order</option>
+                  <option value="preparing">Preparing</option>
                   <option value="in transit">In Transit</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
@@ -311,7 +311,7 @@ const Order = () => {
                               {order.orderStatus}
                             </dd>
                           </div>
-                        ) : order.orderStatus === "pre-order" ? (
+                        ) : order.orderStatus === "preparing" ? (
                           <div>
                             <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
                               <svg
