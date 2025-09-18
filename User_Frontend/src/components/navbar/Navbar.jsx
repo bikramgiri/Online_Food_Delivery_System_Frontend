@@ -9,7 +9,6 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { data: user } = useSelector((state) => state.auth);
-  console.log("user", user);
   const { items } = useSelector((state) => state.cart);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(3)
@@ -17,7 +16,7 @@ const Navbar = () => {
   const handleLogOut = () => {
     dispatch(logOut());
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/login?logout=true");
   };
 
   useEffect(() => {

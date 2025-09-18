@@ -19,6 +19,9 @@ import OrderDetails from './pages/orderDetails/OrderDetails'
 import Dashboard from './pages/admin/dashboard/Dashboard'
 import { ProtectedRouteForAdmin, ProtectedRouteForCustomer } from './pages/ProtectedRoute'
 import MyOrdersQr from './pages/myOrdersQr/MyOrdersQr'
+import ForgotPassword from './pages/auth/ForgotPassword'
+import VerifyOTP from './pages/auth/VerifyOTP'
+import ChangePassword from './pages/auth/ChangePassword'
 
 function App() {
 
@@ -33,6 +36,9 @@ function App() {
           <Route path="/profile" element={<ProtectedRouteForCustomer><UserProfile /></ProtectedRouteForCustomer>} />
           <Route path="/myorders" element={<MyOrders />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/verifyotp" element={<VerifyOTP />} />
+          <Route path="/changepassword" element={<ChangePassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/productdetails/:id" element={<ProductDetails />} />
