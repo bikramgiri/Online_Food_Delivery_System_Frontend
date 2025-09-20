@@ -10,6 +10,7 @@ const VerifyOTP = () => {
   const { status } = useSelector((state) => state.auth); // Access error and message from state
   const [userData, setUserData] = useState({
     email: "",
+    otp: "",
   });
 
   const [emailError, setEmailError] = useState("");
@@ -30,10 +31,17 @@ const VerifyOTP = () => {
     }
   };
 
+  // Validate email format like name@gmail.com where name can have letters, numbers, dots, hyphens, underscores but @gmail.com part is mandatory
   const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches backend regex
+    const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
     return emailRegex.test(email);
-  };
+  }
+    
+
+  // const validateEmail = (email) => {
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.(com|org|net|edu|gov|in)$/i; // Matches backend regex, valid email format like user@example.com
+  //   return emailRegex.test(email);
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,25 +50,44 @@ const VerifyOTP = () => {
 
     if (!userData.email) {
       setEmailError("Email is required");
-      return;
-    }
-
-    if (!userData.otp) {
-      setOtpError("OTP is required");
+      setTimeout(() => {
+        setEmailError("");
+      }, 2000);
       return;
     }
 
     if (!validateEmail(userData.email)) {
       setEmailError("Invalid email format");
+      setTimeout(() => {
+        setEmailError("");
+      }, 2000);
+      return;
+    }
+
+    if (!userData.otp) {
+      setOtpError("OTP is required");
+      setTimeout(() => {
+        setOtpError("");
+      }, 2000);
+      return;
+    }
+
+        // check opt must be 6 digit number
+    const otpRegex = /^\d{6}$/;
+    if (!otpRegex.test(userData.otp)) {
+      setOtpError("OTP must be a 6-digit number");
+      setTimeout(() => {
+        setOtpError("");
+      }, 2000);
       return;
     }
 
     dispatch(verifyotp(userData))
-      .then(() => {
-        if (status === STATUSES.SUCCESS) {
+      .then((response) => {
+        if (response.status === 200) {
           setMessage("OTP verified successfully"); // Override with a consistent message
           setTimeout(() => {
-            // setMessage("");
+            setMessage("");
             navigate("/changepassword");
           }, 2000); // Delay navigation to show success message
         }
@@ -68,17 +95,42 @@ const VerifyOTP = () => {
       .catch((error) => { 
         if (error.response?.status === 404) {
           setEmailError("User not found");
-          setOtpError("Invalid OTP");
           setTimeout(() => {
             setEmailError("");
-            setOtpError("");
           }, 2000); // Delay navigation to show success message
         } else if (error.response?.status === 400) {
-          setEmailError(error.response?.data?.message || "Invalid email format");
-           setOtpError(error.response?.data?.message || "Invalid OTP");
+        //   setEmailError(error.response?.data?.message || "Invalid email format");
+        //   setOtpError(error.response?.data?.message || "Invalid OTP");
+        // } else {
+        //   setEmailError("An unexpected error occurred. Please try again.");
+        //   setOtpError("An unexpected error occurred. Please try again.");
+        // }
+        // *OR
+        const errorMsg = error.response?.data?.message;
+          if (errorMsg === "Invalid OTP" || errorMsg === "OTP has expired") {
+            setOtpError(errorMsg);
+          } else {
+            setEmailError(errorMsg || "Invalid email format");
+          }
+          setTimeout(() => {
+            if (emailError) setEmailError("");
+            if (otpError) setOtpError("");
+            else {
+              setEmailError("");
+              setOtpError("");
+            }
+          }, 2000);
         } else {
           setEmailError("An unexpected error occurred. Please try again.");
           setOtpError("An unexpected error occurred. Please try again.");
+          setTimeout(() => {
+            if (emailError) setEmailError("");
+            if (otpError) setOtpError("");
+            else {
+              setEmailError("");
+              setOtpError("");
+            }
+          }, 2000);
         }
       });
   };

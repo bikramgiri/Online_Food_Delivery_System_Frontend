@@ -7,13 +7,12 @@ import { STATUSES } from "../../global/statuses";
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.auth); // Access error and message from state
+  const { status } = useSelector((state) => state.auth);
   const [userData, setUserData] = useState({
     email: "",
   });
 
   const [emailError, setEmailError] = useState("");
-  // const [, setError] = useState("");
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
@@ -24,12 +23,16 @@ const ForgotPassword = () => {
     });
     if (name === "email") {
       setEmailError("");
-      // dispatch(setError(null)); // Clear error when user types
     }
   };
 
+  // const validateEmail = (email) => {
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches backend regex, valid email format like user@example.com
+  //   return emailRegex.test(email);
+  // };
+
   const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches backend regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|org|net|edu|gov|in)$/i; // Matches backend regex, valid email format like user@example.com
     return emailRegex.test(email);
   };
 
@@ -39,43 +42,55 @@ const ForgotPassword = () => {
 
     if (!userData.email) {
       setEmailError("Email is required");
+      setTimeout(() => {
+        setEmailError("");
+      }, 2000);
       return;
     }
 
     if (!validateEmail(userData.email)) {
       setEmailError("Invalid email format");
+      setTimeout(() => {
+        setEmailError("");
+      }, 2000);
       return;
     }
 
     dispatch(forgotpassword(userData))
-      .then(() => {
-        if (status === STATUSES.SUCCESS) {
-          setMessage("OTP sent to your email"); // Override with a consistent message
+      .then((response) => {
+        if (response.status === 200) {
+          setMessage("OTP sent to your email");
           setTimeout(() => {
-            // setMessage("");
+            setMessage("");
             navigate("/verifyotp");
           }, 2000); // Delay navigation to show success message
         }
       })
-      .catch((error) => { 
+      .catch((error) => {
         if (error.response?.status === 404) {
           setEmailError("User not found");
           setTimeout(() => {
             setEmailError("");
-          }, 2000); // Delay navigation to show success message
+          }, 2000);
         } else if (error.response?.status === 400) {
           setEmailError(error.response?.data?.message || "Invalid email format");
+          setTimeout(() => {
+            setEmailError("");
+          }, 2000);
         } else {
           setEmailError("An unexpected error occurred. Please try again.");
+          setTimeout(() => {
+            setEmailError("");
+          }, 2000);
         }
       });
   };
 
   return (
-    <div className="mt-30 mb-10 flex items-center justify-center bg-gray-100">
+    <div className="mt-33 mb-6 flex items-center justify-center bg-gray-100">
       <div className="bg-white mt-12 p-8 rounded-xl shadow-lg w-full max-w-md">
         {message && <p className="mb-4 text-center text-green-700">{message}</p>}
-        {(emailError) && <p className="text-red-500 text-center mb-4">{emailError}</p>}
+        {emailError && <p className="text-red-500 text-center mb-4">{emailError}</p>}
 
         <h1 className="text-3xl font-bold text-center text-blue-900 mb-6">Foods Hub</h1>
         <h2 className="text-sm font-bold text-center text-gray-900 mb-6">
@@ -95,7 +110,6 @@ const ForgotPassword = () => {
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter your email*"
             />
-            {/* {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>} */}
           </div>
           <button
             type="submit"

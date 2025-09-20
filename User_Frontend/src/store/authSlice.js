@@ -8,10 +8,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     data: [],
-    status: STATUSES.IDLE,
+    status: STATUSES.IDLE, 
     token: "",
-    // error: null, // Add error state to store API errors
-    // message: "", // Add message state for success/error messages
+    email: [],
   },
   reducers: {
     setUser: (state, action) => {
@@ -32,9 +31,9 @@ const authSlice = createSlice({
       state.token = "";
       state.status = STATUSES.IDLE;
     },
-    // setEmail: (state, action) => {
-    //   state.email = action.payload;
-    // },
+    setEmail: (state, action) => {
+      state.email = action.payload;
+    },
     // setError: (state, action) => {
     //   state.error = action.payload;
     // },
@@ -44,7 +43,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, setStatus, setToken, logOut, resetAuth, setEmail, setError, setMessage } = authSlice.actions;
+export const { setUser, setStatus, setToken, logOut, resetAuth, setEmail } = authSlice.actions;
 export default authSlice.reducer;
 
 // User Registration
@@ -138,7 +137,7 @@ export function forgotpassword(data) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await API.post("/auth/forgotpassword", data);
-      dispatch(setUser(response.data.data));
+      dispatch(setEmail(response.data.data));
       // dispatch(setMessage(response.data.message)); // Set the backend message
       dispatch(setStatus(STATUSES.SUCCESS));
       return response; // Return response for further handling
@@ -156,8 +155,7 @@ export function verifyotp(data) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await API.post("/auth/verifyotp", data);
-      console.log("Verify OTP Response:", response.data); // Debug response
-      dispatch(setUser(response.data.data));
+      dispatch(setEmail(data.email));
       dispatch(setStatus(STATUSES.SUCCESS));
       return response; // Return response for further handling
     } catch (error) {
@@ -173,8 +171,6 @@ export function changepassword(data) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await API.post("/auth/changepassword", data);
-      console.log("Change Password Response:", response.data); // Debug response
-      dispatch(setUser(response.data.data));
       dispatch(setStatus(STATUSES.SUCCESS));
       return response; // Return response for further handling
     } catch (error) {

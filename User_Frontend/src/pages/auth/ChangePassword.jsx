@@ -37,7 +37,7 @@ const ChangePassword = () => {
   };
 
   const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|org|net|edu|gov|in)$/i; // Matches backend regex, valid email format like user@example.com
     return emailRegex.test(email);
   };
 
@@ -51,36 +51,70 @@ const ChangePassword = () => {
     // Check required fields
     if (!userData.email) {
       setEmailError("Email is required");
-      return;
-    }
-    if (!userData.otp) {
-      setOtpError("OTP is required");
-      return;
-    }
-    if (!userData.newPassword) {
-      setPasswordError("New password is required");
-      return;
-    }
-    if (!userData.confirmPassword) {
-      setConfirmPasswordError("Confirm password is required");
+      setTimeout(() => {
+        setEmailError("");
+      }, 2000);
       return;
     }
 
-    // Validate email format
+        // Validate email format
     if (!validateEmail(userData.email)) {
       setEmailError("Invalid email format");
+      setTimeout(() => {
+        setEmailError("");
+      }, 2000);
       return;
     }
 
-    // Validate password length
+    if (!userData.otp) {
+      setOtpError("OTP is required");
+      setTimeout(() => {
+        setOtpError("");
+      }, 2000);
+      return;
+    }
+
+    // check opt must be 6 digit number
+    const otpRegex = /^\d{6}$/;
+    if (!otpRegex.test(userData.otp)) {
+      setOtpError("OTP must be a 6-digit number");
+      setTimeout(() => {
+        setOtpError("");
+      }, 2000);
+      return;
+    }
+
+    if (!userData.newPassword) {
+      setPasswordError("New password is required");
+      setTimeout(() => {
+        setPasswordError("");
+      }, 2000);
+      return;
+    }
+
+    // check new password must be at least 6 characters
     if (userData.newPassword.length < 6) {
       setPasswordError("New password must be at least 6 characters long");
+      setTimeout(() => {
+        setPasswordError("");
+      }, 2000);
+      return;
+    }
+
+    if (!userData.confirmPassword) {
+      setConfirmPasswordError("Confirm password is required");
+      setTimeout(() => {
+        setConfirmPasswordError("");
+      }, 2000);
       return;
     }
 
     // Check if new password and confirm password match
     if (userData.newPassword !== userData.confirmPassword) {
       setConfirmPasswordError("New password and confirm password do not match");
+      setTimeout(() => {
+        setConfirmPasswordError("");
+      }, 2000);
       return;
     }
 
@@ -95,6 +129,9 @@ const ChangePassword = () => {
       .catch((error) => {
         if (error.response?.status === 404) {
           setEmailError("User not found");
+          setTimeout(() => {
+            setEmailError("");
+          }, 2000);
         } else if (error.response?.status === 400) {
           const errorMsg = error.response?.data?.message;
           if (errorMsg === "Invalid OTP") setOtpError(errorMsg);
@@ -102,6 +139,13 @@ const ChangePassword = () => {
           else if (errorMsg === "New password must be at least 6 characters long") setPasswordError(errorMsg);
           else if (errorMsg === "New password and confirm password do not match") setConfirmPasswordError(errorMsg);
           else setEmailError("An unexpected error occurred");
+          // make errormessage disappear after 2 seconds
+          setTimeout(() => {
+            if (emailError) setEmailError("");
+            if (otpError) setOtpError("");
+            if (passwordError) setPasswordError("");
+            if (confirmPasswordError) setConfirmPasswordError("");
+          }, 2000);
         }
       });
   };
@@ -197,7 +241,7 @@ const ChangePassword = () => {
           <button
             type="submit"
             disabled={status === STATUSES.LOADING}
-            className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="cursor-pointer w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {status === STATUSES.LOADING ? "Changing..." : "Change Password"}
           </button>

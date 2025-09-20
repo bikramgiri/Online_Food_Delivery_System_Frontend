@@ -156,7 +156,7 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 flex items-center pr-4 mt-34 ml-88 text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="cursor-pointer absolute inset-y-0 flex items-center pr-4 mt-34 ml-88 text-gray-500 hover:text-gray-700 focus:outline-none"
             >
               {showPassword ? (
                 <AiFillEyeInvisible className="h-5 w-5" />
@@ -171,7 +171,7 @@ const Login = () => {
               <input
                 type="checkbox"
                 id="remember"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                className="cursor-pointer h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
               <label htmlFor="remember" className="ml-2 block text-sm text-gray-900">
                 Remember me
@@ -184,7 +184,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={status === STATUSES.LOADING}
-            className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="cursor-pointer w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {status === STATUSES.LOADING ? "Logging in..." : "Login"}
           </button>
