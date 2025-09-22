@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrder } from "../../store/CheckOutSlice";
+import { fetchOrder, updateOrderStatusInStore } from "../../store/CheckOutSlice";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../../App";
 
 const MyOrders = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,13 @@ const MyOrders = () => {
 
   useEffect(() => {
     dispatch(fetchOrder());
+  }, [dispatch]);
+
+
+  useEffect(() => {
+    socket.on("orderStatusUpdated", (data) => {
+      dispatch(updateOrderStatusInStore(data));
+    });
   }, [dispatch]);
 
   // Function to format date: Thusrsday Aug 25, 2025
@@ -180,6 +188,7 @@ const MyOrders = () => {
                   <th className="py-4 px-4 text-center">Total Amount</th>
                   <th className="py-4 px-4 text-center">Order Status</th>
                   <th className="py-4 px-4 text-center">Payment Method</th>
+                  <th className="py-4 px-4 text-center">Payment Status</th>
                   <th className="py-4 px-4 text-center">Action</th>
                 </tr>
               </thead>
@@ -202,9 +211,9 @@ const MyOrders = () => {
                       <td className="py-4 px-4 text-center">
                         {order.orderStatus === "pending" ? (
                           <div>
-                            <dd class="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
+                            <dd className="me-2 mt-1.5 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
                               <svg
-                                class="me-1 h-3 w-3"
+                                className="me-1 h-3 w-3"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -214,9 +223,9 @@ const MyOrders = () => {
                               >
                                 <path
                                   stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
                                   d="M5 11.917 9.724 16.5 19 7.5"
                                 />
                               </svg>
@@ -338,6 +347,9 @@ const MyOrders = () => {
                       </td>
                       <td className="py-4 px-4 text-center font-medium text-gray-100">
                         {order.paymentDetails.method}
+                      </td>
+                      <td className="py-4 px-4 text-center font-medium text-gray-100">
+                        {order.paymentDetails.status}
                       </td>
                       <td className="py-4 px-4 flex justify-center space-x-2">
                         {/* <button

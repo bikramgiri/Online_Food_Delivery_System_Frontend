@@ -19,10 +19,19 @@ const CheckOutSlice = createSlice({
     setOrders: (state, action) => {
       state.orders = action.payload; // for orders
     },
+  // websocket reducers can be added here
+    updateOrderStatus: (state, action) => {
+      // const states = action.payload.status;
+      // const orderId = action.payload.orderId;
+      // or
+      const { orderId, status } = action.payload;
+      const updatedOrder = state.orders.map((order) => order._id === orderId ? { ...order, orderStatus: status } : order);
+      state.orders = updatedOrder;
+    },
   },
 });
 
-export const { setOrder, setStatus, setOrders } = CheckOutSlice.actions;
+export const { setOrder, setStatus, setOrders, updateOrderStatus } = CheckOutSlice.actions;
 export default CheckOutSlice.reducer;
 
 export function createOrder(data) {
@@ -54,3 +63,8 @@ export function fetchOrder() {
   };
 }
 
+export function updateOrderStatusInStore(data) {
+  return function updateOrderStatusInStoreThunk(dispatch) {
+    dispatch(updateOrderStatus(data));
+  };
+}

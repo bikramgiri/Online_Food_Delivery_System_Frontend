@@ -23,6 +23,14 @@ import ForgotPassword from './pages/auth/ForgotPassword'
 import VerifyOTP from './pages/auth/VerifyOTP'
 import ChangePassword from './pages/auth/ChangePassword'
 
+// websocket setup
+import {io} from "socket.io-client";
+export const socket = io("http://localhost:3000",{
+  auth : {
+    token : localStorage.getItem("token")
+  }
+});
+
 function App() {
 
   return (
