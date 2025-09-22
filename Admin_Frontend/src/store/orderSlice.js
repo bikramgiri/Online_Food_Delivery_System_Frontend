@@ -74,7 +74,6 @@ export function updateOrdersStatus(orderId, orderStatus) {
           orderStatus,
         }
       );
-      console.log("Update response:", response);
       dispatch(
         updateOrderStatusById({
           orderId,

@@ -15,6 +15,14 @@ import Footer from "./components/footer/Footer";
 import AddProduct from "./pages/admin/products/AddProduct";
 import EditProduct from "./pages/admin/products/EditProduct";
 
+// websocket setup
+import {io} from "socket.io-client";
+export const socket = io("http://localhost:3000",{
+  auth : {
+    token : localStorage.getItem("token")
+  }
+});
+
 const App = () => {
   return (
     <>

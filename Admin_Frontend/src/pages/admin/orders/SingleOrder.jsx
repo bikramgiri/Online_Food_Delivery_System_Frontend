@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { deleteOrders, fetchOrders, updateOrdersStatus, updatePaymentStatus } from "../../../store/orderSlice";
 import { STATUSES } from "../../../global/statuses";
+import { socket } from "../../../App";
+
+/// websocket setup
+
 
 const SingleOrder = () => {
   const navigate = useNavigate();
@@ -41,6 +45,14 @@ const SingleOrder = () => {
 
 const handleOrderStatus =  () => {
     try {
+
+      // websocket emit event
+      socket.emit("updateOrderStatus", { 
+        orderId: id, 
+        status: orderStatus,
+        userId: filteredOrder?.user?._id
+      });
+
       dispatch(updateOrdersStatus(id, orderStatus ));
       setMessage("Order status updated successfully");
       setTimeout(() => {

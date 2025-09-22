@@ -17,7 +17,6 @@ const OrdersStatus = () => {
     (async () => {
       try {
         const result = await api.getDatas("admin/misc/datas");
-        console.log("result", result);
         setDatas(result || { allOrders: [] });
         setError(null);
       } catch (error) {
