@@ -105,7 +105,7 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-4 mt-6 text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="cursor-pointer absolute inset-y-0 right-0 flex items-center pr-4 mt-6 text-gray-500 hover:text-gray-700 focus:outline-none"
             >
               {showPassword ? (
                 <AiFillEyeInvisible className="h-5 w-5" />

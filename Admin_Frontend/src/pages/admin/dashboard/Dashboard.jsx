@@ -6,7 +6,7 @@ import { IoMdHome } from "react-icons/io";
 import { IoDocuments } from "react-icons/io5";
 import { MdBarChart, MdPerson, MdOutlineShoppingCart, MdDashboard } from "react-icons/md";
 
-import { columnsDataComplex } from "./variables/columnsData";
+// import { columnsDataComplex } from "./variables/columnsData";
 
 import Widget from "../../../components/widget/Widget";
 import UsersData from "./components/UsersData";
@@ -14,7 +14,7 @@ import ComplexTable from "../../../pages/admin/dashboard/components/ComplexTable
 import DailyTraffic from "../../../pages/admin/dashboard/components/DailyTraffic";
 import TaskCard from "../../../pages/admin/dashboard/components/TaskCard";
 // import tableDataCheck from "./variables/tableDataCheck.json";
-import tableDataComplex from "./variables/tableDataComplex.json";
+// import tableDataComplex from "./variables/tableDataComplex.json";
 import React, { useEffect, useState } from "react";
 import api from "../../../http/ApiService";
 // import { all } from "axios";
@@ -58,11 +58,6 @@ const Dashboard = () => {
   } 
   )()
   }, [])
-
- // fetch all stock quantity from datas.allOrders
-//  const allStockQuantities = datas && datas.allOrders?.map((order) => {
-//     return order.items.map(item => item.quantity);
-//   });
 
  // fetch all stock quantity from datas.allProducts
   const allStockQuantities = datas && datas.allProducts?.map((product) => product.productStockQty || 0);
@@ -132,7 +127,7 @@ const Dashboard = () => {
         <MiniCalendar />
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+      {/* <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
           <DailyTraffic />
           <TotalSpent />
       </div>
@@ -143,7 +138,7 @@ const Dashboard = () => {
           tableData={tableDataComplex}
         />
           <TaskCard />
-      </div>
+      </div> */}
 
 
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
