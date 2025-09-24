@@ -14,11 +14,10 @@ import ProductDetails from './pages/productDetails/productDetails'
 import CheckOut from './pages/checkout/CheckOut'
 import PaymentSuccess from './pages/khalti/Paymentsuccess'
 import UserProfile from './pages/profile/UserProfile'
-import MyOrders from './pages/myOrders/MyOrders'
-import OrderDetails from './pages/orderDetails/OrderDetails'
-import Dashboard from './pages/admin/dashboard/Dashboard'
-import { ProtectedRouteForAdmin, ProtectedRouteForCustomer } from './pages/ProtectedRoute'
-import MyOrdersQr from './pages/myOrdersQr/MyOrdersQr'
+import MyOrders from './pages/orders/MyOrders'
+import OrderDetails from './pages/orders/OrderDetails'
+import EditOrders from './pages/orders/EditOrders'
+import { ProtectedRouteForCustomer } from './pages/ProtectedRoute'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import VerifyOTP from './pages/auth/VerifyOTP'
 import ChangePassword from './pages/auth/ChangePassword'
@@ -52,9 +51,8 @@ function App() {
           <Route path="/productdetails/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
-          <Route path="/orderdetails/:id" element={<OrderDetails />} />
-          <Route path="/myorderqr" element={<MyOrdersQr />} />
-          <Route path="/admin" element={<ProtectedRouteForAdmin><Dashboard /></ProtectedRouteForAdmin>} />
+          <Route path="/myorders/orderdetails/:id" element={<OrderDetails />} />
+          <Route path="/myorders/orderdetails/editorders/:id" element={<EditOrders />} />
         </Routes>
       <Footer />
     </BrowserRouter>

@@ -38,7 +38,7 @@ const OrderDetails = () => {
       }
     }
 
-        const handleDeleteOrder = async()=>{
+    const handleDeleteOrder = async()=>{
       try {
         const response = await APIAuthenticated.delete(`/users/orders/${id}`);
         console.log("Delete Response:", response)
@@ -77,14 +77,14 @@ const OrderDetails = () => {
               filteredOrder.items.map((item) => {
                 return (
                   <div
-                    key={item.product._id}
+                    key={item.product?._id}
                     className="rounded-lg mb-2 border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4"
                   >
                     <div className="space-y-2 md:flex md:items-center md:justify-between md:gap-4 md:space-y-0">
                       <img
                         className="h-25 w-35 dark:block"
-                        src={item.product.productImage}
-                        alt={item.product.productName || "Product image"}
+                        src={item.product?.productImage}
+                        alt={item.product?.productName || "Product image"}
                       />
                       <div className="flex mt-10 items-center justify-between md:order-3 md:justify-end">
                         <div className="flex items-center">
@@ -94,14 +94,14 @@ const OrderDetails = () => {
                         </div>
                         <div className="text-end md:order-4 md:w-32">
                           <p className="text-base font-bold text-gray-900 dark:text-white">
-                            NPR {item.product.productPrice}
+                            NPR {item.product?.productPrice}
                           </p>
                         </div>
                       </div>
 
                       <div className="min-w-0 ml-4 flex-1 space-y-4 md:order-2 md:max-w-md">
                         <p className="text-2xl font-medium text-gray-900 dark:text-white">
-                          {item.product.productName}
+                          {item.product?.productName}
                         </p>
                       </div>
                     </div>
@@ -223,21 +223,57 @@ const OrderDetails = () => {
           {/* Actions */}
           <div className="mt-8 space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
           <div className="p-6 flex space-x-4 justify-center bg-gray-50 dark:bg-gray-700">
+            {/* // Make: if filteredOrder?.orderStatus !== "cancelled" && filteredOrder?.orderStatus !== "delivered" && filteredOrder?.orderStatus !== "preparing" && filteredOrder?.orderStatus !== "in transit" */}
             {
-              filteredOrder?.orderStatus !== "cancelled" && (
+              filteredOrder?.orderStatus !== "cancelled" && filteredOrder?.orderStatus !== "delivered" && filteredOrder?.orderStatus !== "preparing" && filteredOrder?.orderStatus !== "in transit" && (
                 <>
             <button onClick={handleCancelOrder} className="cursor-pointer px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 transition duration-200">
               Cancel Order
             </button>
-            <button className="cursor-pointer px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 transition duration-200">
+            <button 
+            type="button"
+                              onClick={() =>
+                    navigate(`/myorders/orderdetails/editorders/${id}`)
+                  }
+            className="cursor-pointer flex px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 transition duration-200">
+                                <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
               Edit Order
+            </button>
+                        <button 
+            type="button"
+            onClick={handleDeleteOrder} className="cursor-pointer flex px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 transition duration-200">
+                                <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+              Delete Order
             </button>
                 </>
               )
             }
-            <button onClick={handleDeleteOrder} className="cursor-pointer px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 transition duration-200">
-              Delete Order
-            </button>
           </div>
         </div>
       </div>

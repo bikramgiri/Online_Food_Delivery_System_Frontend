@@ -15,6 +15,21 @@ const Product = () => {
   const {selectedProduct, data: products, status} = useSelector((state)=>state.product)
   const reviews = selectedProduct.productReviews
 
+      // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8; // Number of items per page
+
+  // Calculate total pages
+  const totalPages = Math.ceil((products?.length || 0) / itemsPerPage);
+
+  // Get current items
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = products?.slice(indexOfFirstItem, indexOfLastItem) || [];
+
+  // Handle page change
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch])
@@ -44,7 +59,7 @@ const Product = () => {
 
   return (
   <>
-  <section className="bg-yellow-00 py-8 antialiased md:py-12">
+  <section id="products" className="bg-yellow-00 py-8 antialiased md:py-12">
         <div className="ml-8 mr-8 mx-auto max-w-screen-2xl px-4 2xl:px-0">
           {/* Heading & Filters */}
           <div className="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
@@ -96,8 +111,8 @@ const Product = () => {
           </div>
           {error && <p className="text-red-500 text-center">{error}</p>} {/* Display error if fetch fails */}
           <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
-            {products.length > 0 ? (
-              products.map((product) => (
+            {currentItems.length > 0 ? (
+              currentItems.map((product) => (
                 <Link to={`/productdetails/${product._id}`} key={product._id}>
                 <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-600">
                   <div className="h-56 w-full">
@@ -177,21 +192,95 @@ const Product = () => {
               <p className="text-center col-span-4">No products available.</p>
             )}
           </div>
-          <div className="w-full text-center">
+          {/* <div className="w-full text-center">
             {products.length > 8 && (
               <button type="button" className="rounded-lg border px-5 py-2.5 text-sm font-medium items-center  dark:text-white dark:bg-yellow-600 dark:hover:bg-yellow-700">
                 Show more
               </button>
             )}
-          </div>
+          </div> */}
         </div>
+        
+
+          <div className="mt-8 flex justify-center">
+            {totalPages > 1 && (
+              <nav aria-label="Pagination">
+                <ul className="flex items-center space-x-2">
+                  <li>
+                    <button
+                      onClick={() => paginate(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="flex items-center justify-center w-10 h-10 text-gray-500 hover:text-white hover:bg-gray-700 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                    </button>
+                  </li>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <li key={page}>
+                        <button
+                          onClick={() => paginate(page)}
+                          className={`flex items-center justify-center w-10 h-10 ${
+                            currentPage === page
+                              ? "bg-blue-600 text-white"
+                              : "text-gray-500 hover:text-white hover:bg-gray-700"
+                          } rounded-full transition-colors`}
+                        >
+                          {page}
+                        </button>
+                      </li>
+                    )
+                  )}
+                  <li>
+                    <button
+                      onClick={() => paginate(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center justify-center w-10 h-10 text-gray-500 hover:text-white hover:bg-gray-700 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
+          </div>
+
+
       {/* <!-- Filter modal --> */}
       <form action="" method="get" id="filterModal" tabIndex="-1" aria-hidden="true" className="fixed left-0 right-0 top-0 z-50 hidden h-modal w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full">
     <div className="relative h-full w-full max-w-xl md:h-auto">
       {/* <!-- Modal content --> */}
       <div className="relative rounded-lg bg-white shadow dark:bg-gray-800">
         {/* <!-- Modal header --> */}
-        <div className="flex items-start justify-between rounded-t p-4 md:p-5">
+        {/* <div className="flex items-start justify-between rounded-t p-4 md:p-5">
           <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">Filters</h3>
           <button type="button" className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="filterModal">
             <svg className="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -199,10 +288,10 @@ const Product = () => {
             </svg>
             <span className="sr-only">Close modal</span>
           </button>
-        </div>
+        </div> */}
         {/* <!-- Modal body --> */}
         <div className="px-4 md:px-5">
-          <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+          {/* <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
             <ul className="-mb-px flex flex-wrap text-center text-sm font-medium" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
               <li className="mr-1" role="presentation">
                 <button className="inline-block pb-2 pr-1" id="brand-tab" data-tabs-target="#brand" type="button" role="tab" aria-controls="profile" aria-selected="false">Brand</button>
@@ -211,10 +300,10 @@ const Product = () => {
                 <button className="inline-block px-2 pb-2 hover:border-gray-300 hover:text-gray-600 dark:hover:text-gray-300" id="advanced-filers-tab" data-tabs-target="#advanced-filters" type="button" role="tab" aria-controls="advanced-filters" aria-selected="false">Advanced Filters</button>
               </li>
             </ul>
-          </div>
+          </div> */}
           <div id="myTabContent">
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3" id="brand" role="tabpanel" aria-labelledby="brand-tab">
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <h5 className="text-lg font-medium uppercase text-black dark:text-white">A</h5>
 
                 <div className="flex items-center">
@@ -258,9 +347,9 @@ const Product = () => {
 
                   <label htmlFor="aruba" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Aruba (16) </label>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <h5 className="text-lg font-medium uppercase text-black dark:text-white">B</h5>
 
                 <div className="flex items-center">
@@ -316,9 +405,9 @@ const Product = () => {
 
                   <label htmlFor="benq2" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"> BenQ (23) </label>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <h5 className="text-lg font-medium uppercase text-black dark:text-white">C</h5>
 
                 <div className="flex items-center">
@@ -356,9 +445,9 @@ const Product = () => {
 
                   <label htmlFor="csl" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Canon (49) </label>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <h5 className="text-lg font-medium uppercase text-black dark:text-white">D</h5>
 
                 <div className="flex items-center">
@@ -390,9 +479,9 @@ const Product = () => {
 
                   <label htmlFor="digitus" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Digitus (1) </label>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <h5 className="text-lg font-medium uppercase text-black dark:text-white">E</h5>
 
                 <div className="flex items-center">
@@ -430,9 +519,9 @@ const Product = () => {
 
                   <label htmlFor="fugoo" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Fugoo (49) </label>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <h5 className="text-lg font-medium uppercase text-black dark:text-white">F</h5>
 
                 <div className="flex items-center">
@@ -458,12 +547,12 @@ const Product = () => {
 
                   <label htmlFor="floston" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Floston (45) </label>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
           <div className="space-y-4" id="advanced-filters" role="tabpanel" aria-labelledby="advanced-filters-tab">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            {/* <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="min-price" className="block text-sm font-medium text-gray-900 dark:text-white"> Min Price </label>
@@ -493,9 +582,9 @@ const Product = () => {
 
                 <input type="number" id="min-delivery-time-input" defaultValue="30" min="3" max="50" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500 " placeholder="" required />
               </div>
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <h6 className="mb-2 text-sm font-medium text-black dark:text-white">Condition</h6>
 
               <ul className="flex w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
@@ -518,10 +607,10 @@ const Product = () => {
                   </div>
                 </li>
               </ul>
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-              <div>
+              {/* <div>
                 <h6 className="mb-2 text-sm font-medium text-black dark:text-white">Colour</h6>
                 <div className="space-y-2">
                   <div className="flex items-center">
@@ -569,12 +658,12 @@ const Product = () => {
                     </label>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div>
                 <h6 className="mb-2 text-sm font-medium text-black dark:text-white">Rating</h6>
                 <div className="space-y-2">
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     <input id="five-stars" type="radio" defaultValue="" name="rating" className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
                     <label htmlFor="five-stars" className="ml-2 flex items-center">
                       <svg aria-hidden="true" className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -598,9 +687,9 @@ const Product = () => {
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     </label>
-                  </div>
+                  </div> */}
 
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     <input id="four-stars" type="radio" defaultValue="" name="rating" className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
                     <label htmlFor="four-stars" className="ml-2 flex items-center">
                       <svg aria-hidden="true" className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -624,9 +713,9 @@ const Product = () => {
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     </label>
-                  </div>
+                  </div> */}
 
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     <input id="three-stars" type="radio" defaultValue="" name="rating" defaultChecked className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
                     <label htmlFor="three-stars" className="ml-2 flex items-center">
                       <svg aria-hidden="true" className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -650,9 +739,9 @@ const Product = () => {
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     </label>
-                  </div>
+                  </div> */}
 
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     <input id="two-stars" type="radio" defaultValue="" name="rating" className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
                     <label htmlFor="two-stars" className="ml-2 flex items-center">
                       <svg aria-hidden="true" className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -676,9 +765,9 @@ const Product = () => {
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     </label>
-                  </div>
+                  </div> */}
 
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     <input id="one-star" type="radio" defaultValue="" name="rating" className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
                     <label htmlFor="one-star" className="ml-2 flex items-center">
                       <svg aria-hidden="true" className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -702,11 +791,11 @@ const Product = () => {
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     </label>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <h6 className="mb-2 text-sm font-medium text-black dark:text-white">Weight</h6>
 
                 <div className="space-y-2">
@@ -740,10 +829,10 @@ const Product = () => {
                     <label htmlFor="over-3-kg" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Over 3 kg </label>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
-            <div>
+            {/* <div>
               <h6 className="mb-2 text-sm font-medium text-black dark:text-white">Delivery type</h6>
 
               <ul className="grid grid-cols-2 gap-4">
@@ -784,18 +873,18 @@ const Product = () => {
                   </label>
                 </li>
               </ul>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* <!-- Modal footer --> */}
-        <div className="flex items-center space-x-4 rounded-b p-4 dark:border-gray-600 md:p-5">
+        {/* <div className="flex items-center space-x-4 rounded-b p-4 dark:border-gray-600 md:p-5">
           <button type="submit" className="rounded-lg bg-primary-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Show 50 results</button>
           <button type="reset" className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Reset</button>
-        </div>
+        </div> */}
       </div>
     </div>
-      </form>
+    </form>
   </section>
   </>
   )

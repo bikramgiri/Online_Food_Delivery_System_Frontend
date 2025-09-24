@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrder, updateOrderStatusInStore } from "../../store/CheckOutSlice";
+import {
+  deleteOrders,
+  fetchOrder,
+  updateOrderStatusInStore,
+} from "../../store/CheckOutSlice";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../App";
+import { APIAuthenticated } from "../../http";
+import { STATUSES } from "../../global/statuses";
 
 const MyOrders = () => {
   const dispatch = useDispatch();
+  // const { id } = useParams();
   const navigate = useNavigate();
-  const { orders } = useSelector((state) => state.checkout);
+  const { orders, status } = useSelector((state) => state.checkout);
+  const [message, setMessage] = useState("");
   const [selectedItem, setSelectedItem] = useState("all-orders");
   const [selectedTime, setSelectedTime] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,7 +24,6 @@ const MyOrders = () => {
   useEffect(() => {
     dispatch(fetchOrder());
   }, [dispatch]);
-
 
   useEffect(() => {
     socket.on("orderStatusUpdated", (data) => {
@@ -103,9 +110,21 @@ const MyOrders = () => {
       : true;
   });
 
+  const handleDeleteOrder = (id) => {
+    dispatch(deleteOrders(id));
+    if (status === STATUSES.SUCCESS) {
+      setMessage("Order deleted successfully");
+      setTimeout(() => {
+        setMessage("");
+      }, 2000); // 
+    }
+  };
+
   return (
     <section className="bg-gray-900 min-h-screen py-12 antialiased text-gray-300">
+    {/* {message && <p className="text-green-500 text-center mt-24">{message}</p>} */}
       <div className="mt-24 max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+            {message && <p className="text-green-500 text-center mt-24 mb-8">{message}</p>}
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-700 pb-4 mb-6">
             <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">
@@ -360,11 +379,18 @@ const MyOrders = () => {
                         </button> */}
                         <button
                           onClick={() => {
-                            navigate(`/orderdetails/${order._id}`);
+                            navigate(`/myorders/orderdetails/${order._id}`);
                           }}
-                          className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                          className="cursor-pointer px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                         >
                           View Details
+                        </button>
+                        <button
+                          onClick={() => handleDeleteOrder(order._id)}
+                          // onClick={handleDeleteOrder}
+                          className="cursor-pointer px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>
