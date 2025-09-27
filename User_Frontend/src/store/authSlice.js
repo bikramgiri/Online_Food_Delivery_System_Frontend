@@ -15,6 +15,7 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.data = action.payload;
+      localStorage.setItem("userId", action.payload._id); // Save on login
     },
     setStatus: (state, action) => {
       state.status = action.payload;

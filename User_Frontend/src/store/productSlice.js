@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { API, APIAuthenticated } from "../http";
+import { fetchAllReviews } from "./reviewSlice";
 
 const API_URL = import.meta.env.API_URL || 'http://localhost:3000';
 const STATUSES = Object.freeze({
@@ -78,6 +79,7 @@ export function fetchProducts(){
             const response = await APIAuthenticated.get(`${API_URL}/admin/products`);
             dispatch(setProducts(response.data.data.reverse()));
             dispatch(setStatus(STATUSES.SUCCESS));
+            dispatch(fetchAllReviews()); // Fetch all reviews after fetching products
         } catch (error) {
             console.log("Failed to fetch products:", error);
             dispatch(setStatus(STATUSES.ERROR));

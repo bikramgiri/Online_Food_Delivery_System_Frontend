@@ -33,6 +33,14 @@ const Product = ({ id: productId }) => {
     dispatch(addToCart(productId));
   };
 
+  const handleReviewsClick = (e) => {
+    e.preventDefault();
+    const reviewsSection = document.getElementById("reviews");
+    if (reviewsSection) {
+      reviewsSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <section className="py-8 bg-white md:py-16 dark:bg-gray-700 antialiased">
@@ -117,7 +125,8 @@ const Product = ({ id: productId }) => {
                     (5.0)
                   </p>
                   <Link
-                    to="#"
+                    to="#reviews"
+                    onClick={handleReviewsClick}
                     className="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
                   >
                     {reviews?.length} Reviews
@@ -125,7 +134,7 @@ const Product = ({ id: productId }) => {
                 </div>
               </div>
               {/* Product Status */}
-              <div className="mt-2 flex gap-6 mt-6">
+              <div className="flex gap-6 mt-6">
                 <p className="text-sm font-medium leading-none dark:text-white">
                   Status: {product?.productStatus}
                 </p>
@@ -167,7 +176,7 @@ const Product = ({ id: productId }) => {
                   type="button"
                   // displable Add to Cart button if Stock quantity is 0  
                   disabled={product?.productStockQty === 0}
-                  className="disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center rounded-lg px-5 py-2.5 text-sm font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
+                  className="disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer flex items-center rounded-lg px-5 py-2.5 text-sm font-medium dark:text-white border dark:bg-yellow-600 dark:hover:bg-yellow-700"
                 >
                   <svg
                     className="-ms-2 me-2 h-5 w-5"
