@@ -36,8 +36,21 @@ const AddProduct = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { productName, productStockQty, productPrice, productStatus, productDescription } = formData;
-    if (!productName || !file || !productStockQty || !productPrice || !productStatus || !productDescription) {
+    const {
+      productName,
+      productStockQty,
+      productPrice,
+      productStatus,
+      productDescription,
+    } = formData;
+    if (
+      !productName ||
+      !file ||
+      !productStockQty ||
+      !productPrice ||
+      !productStatus ||
+      !productDescription
+    ) {
       setMessage("All fields are required, including an image.");
       setTimeout(() => setMessage(""), 2000);
       return;
@@ -84,7 +97,9 @@ const AddProduct = () => {
         }, 2000);
       })
       .catch((error) => {
-        const errorMsg = error.response?.data?.message || "Failed to add product. Please try again.";
+        const errorMsg =
+          error.response?.data?.message ||
+          "Failed to add product. Please try again.";
         setMessage(errorMsg);
         setTimeout(() => setMessage(""), 2000);
       });
@@ -113,11 +128,28 @@ const AddProduct = () => {
     <section className="bg-gray-900 min-h-screen py-12 antialiased text-gray-300">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-white mb-6">Add New Product</h2>
-          {message && <p className={`text-center mb-4 ${message.includes("Failed") ? "text-red-500" : "text-green-500"}`}>{message}</p>}
-          <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
+          <h2 className="text-2xl font-bold text-white mb-6">
+            Add New Product
+          </h2>
+          {message && (
+            <p
+              className={`text-center mb-4 ${
+                message.includes("Failed") ? "text-red-500" : "text-green-500"
+              }`}
+            >
+              {message}
+            </p>
+          )}
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            encType="multipart/form-data"
+          >
             <div>
-              <label htmlFor="productName" className="block text-sm font-medium text-gray-200">
+              <label
+                htmlFor="productName"
+                className="block text-sm font-medium text-gray-200"
+              >
                 Product Name
               </label>
               <input
@@ -132,7 +164,10 @@ const AddProduct = () => {
             </div>
 
             <div>
-              <label htmlFor="productImage" className="block text-sm font-medium text-gray-200">
+              <label
+                htmlFor="productImage"
+                className="block text-sm font-medium text-gray-200"
+              >
                 Product Image
               </label>
               <div
@@ -147,33 +182,38 @@ const AddProduct = () => {
                 ) : (
                   // make below svg and text centered
                   <div className="flex flex-col justify-center items-center space-x-2">
-      <svg
-        className="w-5 h-5"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M4 16V4C4 2.89543 4.89543 2 6 2H18C19.1046 2 20 2.89543 20 4V16C20 17.1046 19.1046 18 18 18H6C4.89543 18 4 17.1046 4 16Z"/>
-        <path d="M8 10L12 6L16 10"/>
-        <path d="M12 6V14"/>
-      </svg>
-      <><p className="text-sm mt-3">Click to upload or drag and drop</p>
-      <br />
-      <p className="text-xs text-gray-400">PNG, JPG, JPEG(Max. 1MB)</p>
-      </>
-    </div>
+                    <svg
+                      className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 16"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      />
+                    </svg>
+                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                      <span className="font-semibold">Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      PNG, JPG, JPEG or GIF (MAX. 1MB)
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
 
             <div>
-              <label htmlFor="productStockQty" className="block text-sm font-medium text-gray-200">
+              <label
+                htmlFor="productStockQty"
+                className="block text-sm font-medium text-gray-200"
+              >
                 Stock Quantity
               </label>
               <input
@@ -189,7 +229,10 @@ const AddProduct = () => {
             </div>
 
             <div>
-              <label htmlFor="productPrice" className="block text-sm font-medium text-gray-200">
+              <label
+                htmlFor="productPrice"
+                className="block text-sm font-medium text-gray-200"
+              >
                 Price (NPR)
               </label>
               <input
@@ -206,7 +249,10 @@ const AddProduct = () => {
             </div>
 
             <div>
-              <label htmlFor="productStatus" className="block text-sm font-medium text-gray-200">
+              <label
+                htmlFor="productStatus"
+                className="block text-sm font-medium text-gray-200"
+              >
                 Status
               </label>
               <select
@@ -222,7 +268,10 @@ const AddProduct = () => {
             </div>
 
             <div>
-              <label htmlFor="productDescription" className="block text-sm font-medium text-gray-200">
+              <label
+                htmlFor="productDescription"
+                className="block text-sm font-medium text-gray-200"
+              >
                 Description
               </label>
               <textarea
@@ -301,9 +350,9 @@ const AddProduct = () => {
               </button>
             </div>
             {/* display product added success message in green color */}
-                {message && (
-            <p className="text-green-500 text-center mb-8">{message}</p>
-          )}
+            {message && (
+              <p className="text-green-500 text-center mb-8">{message}</p>
+            )}
           </form>
         </div>
       </div>
