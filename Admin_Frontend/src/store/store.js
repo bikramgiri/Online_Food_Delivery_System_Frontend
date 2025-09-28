@@ -3,6 +3,7 @@ import authSlice from './authSlice'
 import orderSlice from './orderSlice'
 import userSlice from './UserSlice'
 import productSlice from './productSlice'
+import reviewSlice from './reviewSlice'
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     order: orderSlice,
     user: userSlice,
     product: productSlice,
+    review: reviewSlice,
   },
 });
 
