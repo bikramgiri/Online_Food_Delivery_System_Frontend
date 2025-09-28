@@ -26,6 +26,7 @@ import ChangePassword from './pages/auth/ChangePassword'
 import {io} from "socket.io-client";
 import AddReview from './pages/productDetails/components/review/AddReview'
 import EditReview from './pages/productDetails/components/review/EditReview'
+import MyReviews from './pages/productDetails/components/review/MyReviews'
 export const socket = io("http://localhost:3000",{
   auth : {
     token : localStorage.getItem("token")
@@ -53,6 +54,7 @@ function App() {
           <Route path="/productdetails/:id" element={<ProductDetails />} />
           <Route path="/addreview/:id" element={<AddReview />} />
           <Route path="/editreview/:id" element={<EditReview />} />
+          <Route path="/myreviews" element={<MyReviews />} />
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
           <Route path="/myorders/orderdetails/:id" element={<OrderDetails />} />

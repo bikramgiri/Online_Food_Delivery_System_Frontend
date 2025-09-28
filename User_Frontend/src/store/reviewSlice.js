@@ -68,8 +68,10 @@ export function fetchMyReviews() {
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get("/users/reviews");
+      console.log("My Reviews:", response.data.data);
       dispatch(setReviews(response.data.data.reverse()));
       dispatch(setStatus(STATUSES.SUCCESS));
+      dispatch(fetchAllReviews());
     } catch (error) {
       console.log("Failed to fetch reviews:", error.response?.data);
       dispatch(setStatus(STATUSES.ERROR));
