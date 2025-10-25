@@ -3,8 +3,8 @@ import { BrowserRouter, RouterProvider, Routes, Route } from 'react-router-dom'
 // import router from './Router'
 import Navbar from './components/navbar/Navbar'
 import Footer from './components/footer/Footer'
-import { Provider } from 'react-redux'
-import store from './store/store'
+import { Provider, useDispatch } from 'react-redux'
+// import store from './store/store'
 import Cart from './pages/cart/Cart'
 import Home from './pages/Home/Home'
 import About from './pages/about/About'
@@ -27,6 +27,8 @@ import {io} from "socket.io-client";
 import AddReview from './pages/productDetails/components/review/AddReview'
 import EditReview from './pages/productDetails/components/review/EditReview'
 import MyReviews from './pages/productDetails/components/review/MyReviews'
+import { useEffect } from 'react'
+import { handleGoogleLogin } from './store/authSlice'
 export const socket = io("http://localhost:3000",{
   auth : {
     token : localStorage.getItem("token")
@@ -34,10 +36,14 @@ export const socket = io("http://localhost:3000",{
 });
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(handleGoogleLogin());
+  }, [dispatch]);
 
   return (
     <>
-    <Provider store={store}>
+    {/* <Provider store={store}> */}
     <BrowserRouter>
       <Navbar />
         <Routes>
@@ -62,7 +68,7 @@ function App() {
         </Routes>
       <Footer />
     </BrowserRouter>
-    </Provider>
+    {/* </Provider> */}
     </>
   )
 }

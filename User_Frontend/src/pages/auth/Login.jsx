@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../store/authSlice";
+import { fetchUserProfile, loginUser } from "../../store/authSlice";
 import { STATUSES } from "../../global/statuses";
 // Google Icon
 import { FcGoogle } from "react-icons/fc";
@@ -56,8 +56,8 @@ const Login = () => {
     }
 
     dispatch(loginUser(userData))
-      // .unwrap()
       .then(() => {
+        dispatch(fetchUserProfile());
         setMessage("Login successful");
         setTimeout(() => {
           setMessage("");
@@ -198,7 +198,7 @@ const Login = () => {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">Or login with</p>
           <div className="mt-2 flex justify-center space-x-4">
-            <button className="cursor-pointer flex ml-3 items-center bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50">
+            <button onClick={() => window.open("http://localhost:3000/auth/google", "_self")} className="cursor-pointer flex ml-3 items-center bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50">
               <FcGoogle className="w-5 h-5 mr-2" />
               <span className="text-sm text-gray-700">Google</span>
             </button>

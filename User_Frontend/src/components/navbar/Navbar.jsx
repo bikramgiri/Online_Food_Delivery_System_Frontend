@@ -9,20 +9,27 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { data: user } = useSelector((state) => state.auth);
+  console.log("User in Navbar:", user); // Debug user data
   const { items } = useSelector((state) => state.cart);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(3)
 
   const handleLogOut = () => {
     dispatch(logOut());
+    // remove token from localStorage
     localStorage.removeItem("token");
     navigate("/login?logout=true");
   };
 
   useEffect(() => {
-    dispatch(fetchCartItems());
-    dispatch(fetchUserProfile());
-  }, [dispatch]);
+    const token = localStorage.getItem("token");
+    if(token && !user){
+      dispatch(fetchUserProfile());
+    }
+    if(user){
+      dispatch(fetchCartItems());
+    }
+  }, [dispatch, user]);
 
   // handle notifications
   const markAllAsRead = () => {
@@ -55,6 +62,9 @@ const Navbar = () => {
     }
   };
 
+  // Auth check: token in localStorage OR user exists
+  const isAuthenticated = localStorage.getItem("token") || user;
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
       {/* Top Bar */}
@@ -62,7 +72,8 @@ const Navbar = () => {
         <div className="max-w-screen-xl mx-auto flex justify-between items-center">
           <div className="pl-130 text-center">Get free delivery on orders over $100</div>
           <div className="flex space-x-4">
-            {(!user || user.length === 0) && !localStorage.getItem("token") ? (
+            {/* check cookies for token */}
+            {!isAuthenticated ? (
               <>
                 <Link
                   to="/register"
@@ -223,7 +234,7 @@ const Navbar = () => {
               </svg> */}
                   <img
                     className="w-8 h-8 rounded-full"
-                    src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" // Placeholder avatar
+                    src={user?.avatar || "https://flowbite.com/docs/images/people/profile-picture-5.jpg"} // Placeholder avatar
                     alt="User avatar"
                   />
             </button>
@@ -238,12 +249,12 @@ const Navbar = () => {
                 <div className="px-4 py-3 flex items-center space-x-3 bg-gray-900 rounded-t-lg">
                   <img
                     className="w-10 h-10 rounded-full"
-                    src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" // Placeholder avatar
+                    src={user?.avatar || "https://flowbite.com/docs/images/people/profile-picture-5.jpg"} // Placeholder avatar
                     alt="User avatar"
                   />
                   <div>
-                    <span className="block text-sm font-semibold text-white">Jese Leos</span>
-                    <span className="block text-xs text-gray-400 truncate">jese@flowbite.com</span>
+                    <span className="block text-sm font-semibold text-white">{user?.username  || "Jese Leos"}</span>
+                    <span className="block text-xs text-gray-400 truncate">{user?.email || "jese@flowbite.com"}</span>
                   </div>
 
                   {/* cross icon to close */}

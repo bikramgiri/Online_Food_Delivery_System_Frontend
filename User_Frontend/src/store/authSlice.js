@@ -9,28 +9,38 @@ const authSlice = createSlice({
   initialState: {
     data: [],
     status: STATUSES.IDLE, 
-    token: "",
-    email: [],
+    // token: "",
+    token: localStorage.getItem("token") || "", // Load on init
+    email: '',
   },
   reducers: {
     setUser: (state, action) => {
       state.data = action.payload;
-      localStorage.setItem("userId", action.payload._id); // Save on login
     },
     setStatus: (state, action) => {
       state.status = action.payload;
     },
     setToken: (state, action) => {
       state.token = action.payload;
+      if (action.payload) {
+        localStorage.setItem("token", action.payload);
+      } else {
+        localStorage.removeItem("token");
+      }
     },
     logOut: (state) => {
-      state.data = [];
-      state.token = null;
+      state.data = null;
+      state.token = "";
+      // remove token from localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      state.status = STATUSES.IDLE;
     },
     resetAuth: (state) => {
-      state.data = [];
+      state.data = null;
       state.token = "";
       state.status = STATUSES.IDLE;
+      localStorage.removeItem("token");
     },
     setEmail: (state, action) => {
       state.email = action.payload;
@@ -108,7 +118,7 @@ export function loginUser(data) {
       // Save token to cookies
       // document.cookie = `token=${response.data.token}; path=/`;
       // Save token to localStorage
-      localStorage.setItem("token", response.data.token);
+      // localStorage.setItem("token", response.data.token);
     } catch (error) {
       console.log("Failed to login user:", error);
       dispatch(setStatus(STATUSES.ERROR));
@@ -119,7 +129,13 @@ export function loginUser(data) {
 
 // fetch profile
 export function fetchUserProfile() {
-  return async function fetchUserProfileThunk(dispatch) {
+  return async function fetchUserProfileThunk(dispatch, getState) {
+    const state = getState();
+    if (!state.auth.token) {
+      console.log("No token available, skipping profile fetch");
+      dispatch(logOut()); // Clear if no token
+      return;
+    }
     dispatch(setStatus(STATUSES.LOADING));
     try {
       const response = await APIAuthenticated.get("/users/profile");
@@ -127,11 +143,29 @@ export function fetchUserProfile() {
       dispatch(setStatus(STATUSES.SUCCESS));
     } catch (error) {
       console.log("Failed to fetch user profile:", error.response?.data);
+      // if (error.response?.status === 401) {
+      //   dispatch(logOut()); // Only on server 401
+      // }
       dispatch(setStatus(STATUSES.ERROR));
     }
   };
 }
 
+// Google login (parse token from URL, save to localStorage)
+export function handleGoogleLogin() {
+  return async function handleGoogleLoginThunk(dispatch) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const success = urlParams.get('loginSuccess');
+
+    if (token && success === 'true') {
+      dispatch(setToken(token)); // Saves to localStorage
+      dispatch(fetchUserProfile());
+      window.history.replaceState({}, document.title, window.location.pathname);
+      console.log("Google login token set successfully");
+    }
+  };
+}
 
 export function forgotpassword(data) {
   return async function forgotPasswordThunk(dispatch) {
